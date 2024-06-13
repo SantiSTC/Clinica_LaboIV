@@ -1,0 +1,234 @@
+
+<div class="h-screen w-screen flex flex-col overflow-x-hidden">
+    <div class="h-16 w-full flex flex-row items-center justify-between px-6 bg-customDarkBlue z-50">
+        <div class="h-full flex flex-1 items-center flex-row gap-4">
+            <img src="/assets/clinica.png" alt="" class="h-7 w-7">
+            <h1 class="text-slate-100 font-bold text-xl">Sección Usuarios</h1>
+        </div>
+        <div class="h-full flex flex-1 items-center justify-end flex-row gap-4">
+            @if (!agregandoUsuario) {
+                <button (click)="agregandoUsuario = true" class="h-8 w-36 rounded-full bg-slate-100 text-customBlue flex justify-center items-center shadow-2xl hover:bg-customBlue hover:text-slate-100 transition-colors">
+                    <p class="text-sm font-semibold">Nuevo Usuario</p>
+                </button>
+            } @else {
+                <button (click)="agregandoUsuario = false" class="h-8 w-52 rounded-full bg-red-600 text-white flex justify-center items-center shadow-2xl hover:bg-red-700 hover:text-slate-100 transition-colors">
+                    <p class="text-sm font-semibold">Cancelar agregar usuario</p>
+                </button>
+            }
+            <button routerLink="/home" class="h-8 w-24 rounded-full bg-slate-100 text-customBlue flex justify-center items-center shadow-2xl hover:bg-customBlue hover:text-slate-100 transition-colors">
+                <p class="text-sm font-semibold">Home</p>
+            </button>
+        </div>
+    </div>
+    @if (agregandoUsuario) {
+        <div class="h-full w-full flex justify-center items-center backdrop-blur-md z-40 absolute mt-6">
+            <div class="w-[420px] h-[470px] flex flex-col bg-slate-100 rounded-md shadow-2xl overflow-y-auto">
+                <div class="h-10 min-h-10 w-full flex flex-row rounded-t-md cursor-pointer">
+                    @if (userType == 'paciente') {
+                        <div (click)="userType = 'paciente'" class="h-full w-1/2 flex justify-center items-center">
+                            <h1 class="text-customLightBlue font-medium">Paciente</h1>
+                        </div>
+                        <div (click)="userType = 'especialista'" class="h-full w-1/2 flex justify-center items-center border-x-2 border-b-2">
+                            <h1 class="text-customLightBlue font-medium">Especialista</h1>
+                        </div>
+                        <div (click)="userType = 'admin'" class="h-full w-1/2 flex justify-center items-center border-b-2">
+                            <h1 class="text-customLightBlue font-medium">Administrador</h1>
+                        </div>
+                    } @else if (userType == 'especialista') {
+                        <div (click)="userType = 'paciente'" class="h-full w-1/2 flex justify-center items-center  border-r-2 border-b-2">
+                            <h1 class="text-customLightBlue font-medium">Paciente</h1>
+                        </div>
+                        <div (click)="userType = 'especialista'" class="h-full w-1/2 flex justify-center items-center">
+                            <h1 class="text-customLightBlue font-medium">Especialista</h1>
+                        </div>
+                        <div (click)="userType = 'admin'" class="h-full w-1/2 flex justify-center items-center border-l-2 border-b-2">
+                            <h1 class="text-customLightBlue font-medium">Administrador</h1>
+                        </div>
+                    } @else {
+                        <div (click)="userType = 'paciente'" class="h-full w-1/2 flex justify-center items-center  border-r-2 border-b-2">
+                            <h1 class="text-customLightBlue font-medium">Paciente</h1>
+                        </div>
+                        <div (click)="userType = 'especialista'" class="h-full w-1/2 flex justify-center items-center border-r-2 border-b-2">
+                            <h1 class="text-customLightBlue font-medium">Especialista</h1>
+                        </div>
+                        <div (click)="userType = 'admin'" class="h-full w-1/2 flex justify-center items-center ">
+                            <h1 class="text-customLightBlue font-medium">Administrador</h1>
+                        </div>
+                    }
+                </div>
+                <div class="h-full w-full flex flex-col rounded-md gap-4 py-5 px-10">
+                    <div class="flex flex-row gap-4">
+                        <div class="flex flex-col">
+                            <label for="name" class="text-customLightBlue font-medium text-sm">Nombre</label>
+                            <input id="name" type="text" class="w-full h-8 border border-customLightBlue focus: rounded-md px-2" [(ngModel)]="name">
+                        </div>
+                        <div class="flex flex-col">
+                            <label for="lastname" class="text-customLightBlue font-medium text-sm">Apellido</label>
+                            <input id="lastname" type="text" class="w-full h-8 border border-customLightBlue focus: rounded-md px-2" [(ngModel)]="lastname">
+                        </div>
+                    </div>
+    
+                    <div class="flex flex-row gap-4">
+                        <div class="w-1/4 flex flex-col">
+                            <label for="edad" class="text-customLightBlue font-medium text-sm">Edad</label>
+                            <input id="edad" type="number" class="w-full h-8 border border-customLightBlue focus: rounded-md px-2" [(ngModel)]="edad">
+                        </div>
+                        <div class="w-3/4 flex flex-col">
+                            <label for="dni" class="text-customLightBlue font-medium text-sm">DNI</label>
+                            <input id="dni" type="number" class="w-full h-8 border border-customLightBlue focus: rounded-md px-2" [(ngModel)]="dni">
+                        </div>
+                    </div>
+                    @if (userType == "paciente") {
+                        <div>
+                            <label for="obrasocial" class="text-customLightBlue font-medium text-sm">Obra social</label>
+                            <input type="obrasocial" class="w-full h-8 border border-customLightBlue focus: rounded-md px-2" [(ngModel)]="obrasocial">
+                        </div>
+                    } @else if (userType == "especialista"){
+                        <div class="flex flex-col">
+                            <label for="listaespecialidad" class="text-customLightBlue font-medium text-sm">Especialidad</label>
+                            <select name="listaespecialidad" id="listaespecialidad" class="w-full h-8 border border-customLightBlue rounded-md px-2 text-zinc-700" [(ngModel)]="especialidad">
+                                <option value="elige" disabled selected >Elige una opción</option>
+                                <option value="clinico">Clinico</option>
+                                <option value="traumatologia">Traumatología</option>
+                                <option value="pediatria">Pediatría</option>
+                                <option value="dermatologia">Dermatología</option>
+                                <option value="cardiologia">Cardiología</option>
+                                <option value="oftalmologia">Oftalmología</option>
+                                <option value="otra">Otra</option>
+                            </select>
+                        </div>
+                        @if (especialidad == "otra") {
+                            <div>
+                                <label for="especialidad" class="text-customLightBlue font-medium text-sm">Otra Especialidad</label>
+                                <input type="especialidad" class="w-full h-8 border border-customLightBlue focus: rounded-md px-2" [(ngModel)]="otraEspecialidad">
+                            </div>
+                        }
+                    }
+                    <div>
+                        <label for="email" class="text-customLightBlue font-medium text-sm">Correo electrónico</label>
+                        <input type="email" class="w-full h-8 border border-customLightBlue focus: rounded-md px-2" [(ngModel)]="emailAAgregar">
+                    </div>
+                    <div>
+                        <label for="password" class="text-customLightBlue font-medium text-sm">Contraseña</label>
+                        <input type="password" class="w-full h-8 border border-customLightBlue focus: rounded-md px-2" [(ngModel)]="password">
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="imagen" class="text-customLightBlue font-medium text-sm">Elige una imagen de perfil:</label>
+                        <label for="imagen" class="h-8 w-32 px-2 py-1 bg-customLightBlue rounded-md text-white flex justify-center hover:bg-white hover:text-customLightBlue transition-colors cursor-pointer">Sube tu foto</label>
+                        @if (!foto1) {
+                            <input (change)="onFileSelected($event, 'foto1')" type="file" id="imagen" name="imagen" accept="image/*" class="h-8 hidden">
+                        } @else {
+                            <div class="flex flex-row">
+                                <input (change)="onFileSelected($event, 'foto1')" type="file" id="imagen" name="imagen" accept="image/*" class="h-8 hidden">
+                                <p class="text-green-700 font-medium text-xs">Imagen subida con exito!</p>
+                            </div>
+                        }
+                    </div>
+                    @if (userType == "paciente") {
+                        <div class="flex flex-col">
+                            <label for="imagen2" class="text-customLightBlue font-medium text-sm">Elige una segunda imagen de perfil:</label>
+                            <label for="imagen2" class="h-8 w-32 px-2 py-1 bg-customLightBlue rounded-md text-white flex justify-center hover:bg-white hover:text-customLightBlue transition-colors cursor-pointer">Sube tu foto</label>
+                            @if (!foto2) {
+                                <input (change)="onFileSelected($event, 'foto2')" type="file" id="imagen2" name="imagen2" accept="image/*" class="h-8 hidden">
+                            } @else {
+                                <div class="flex flex-row">
+                                    <input (change)="onFileSelected($event, 'foto2')" type="file" id="imagen2" name="imagen2" accept="image/*" class="h-8 hidden">
+                                    <p class="text-green-700 font-medium text-xs">Imagen subida con exito!</p>
+                                </div>
+                            }
+                        </div>
+                    }
+                    <div class="mt-auto pb-6 pt-3">
+                        <button (click)="register()" class="w-full h-10 rounded-md bg-customLightBlue text-white font-medium hover:bg-customBlue transition-colors">Registrate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <div class="h-full w-full flex flex-col bg-slate-200">
+        <div class="h-12 w-full flex flex-row">
+            @if (verUsuariosTipo === "paciente") {
+                <div class="h-full w-full flex flex-1 justify-center items-center">
+                    <p class="text-xl font-bold text-customDarkBlue">Pacientes</p>
+                </div>
+                <div (click)="verUsuariosTipo = 'especialista'" class="h-full w-full flex flex-1 justify-center items-center border-l-2 border-b-2 border-customDarkBlue rounded-bl-md cursor-pointer bg-slate-300">
+                    <p class="text-xl font-bold text-customDarkBlue">Especialistas</p>
+                </div>
+            } @else {
+                <div (click)="verUsuariosTipo = 'paciente'" class="h-full w-full flex flex-1 justify-center items-center border-r-2 border-b-2 border-customDarkBlue rounded-br-md cursor-pointer bg-slate-300">
+                    <p class="text-xl font-bold text-customDarkBlue">Pacientes</p>
+                </div>
+                <div class="h-full w-full flex flex-1 justify-center items-center">
+                    <p class="text-xl font-bold text-customDarkBlue">Especialistas</p>
+                </div>
+            }
+        </div>
+        <div class="h-full w-full flex justify-center items-center">
+            <div class="h-[90%] w-[95%] rounded-md border-2 border-customDarkBlue">
+                <table class="w-full h-full">
+                    <thead class="w-full">
+                        @if (verUsuariosTipo === "paciente") {
+                            <tr class="w-full h-8 bg-customDarkBlue text-slate-100">
+                                <th class="w-[12.2%]">DNI</th>
+                                <th class="w-[14.2%]">Nombre</th>
+                                <th class="w-[20.2%]">Apellido</th>
+                                <th class="w-[6.2%]">Edad</th>
+                                <th class="w-[20.2%]">Obra social</th>
+                                <th class="w-[26.4%]">Email</th> 
+                            </tr>
+                        } @else {
+                            <tr class="w-full h-8 bg-customDarkBlue text-slate-100">
+                                <th class="w-[12.2%]">DNI</th>
+                                <th class="w-[14.2%]">Nombre</th>
+                                <th class="w-[14.2%]">Apellido</th>
+                                <th class="w-[6.2%]">Edad</th>
+                                <th class="w-[14.2%]">Especialidad</th>
+                                <th class="w-[23.2%]">Email</th>
+                                <th class="w-[15.2%]">Acciones</th> 
+                            </tr>
+                        }
+                    </thead>
+                    <tbody class="w-full overflow-y-auto">
+                        @if (verUsuariosTipo === "paciente") {
+                            @for (item of usuariosPaciente; track $index) {
+                                <tr class="w-full bg-slate-100 font-medium text-customDarkBlue">
+                                    <td class="w-[12.2%] border-r border-customDarkBlue text-center">{{item.dni}}</td>
+                                    <td class="w-[14.2%] border-r border-customDarkBlue text-center">{{item.name}}</td>
+                                    <td class="w-[20.2%] border-r border-customDarkBlue text-center">{{item.lastname}}</td>
+                                    <td class="w-[6.2%] border-r border-customDarkBlue text-center">{{item.edad}}</td>
+                                    <td class="w-[20.2%] border-r border-customDarkBlue text-center">{{item.obrasocial}}</td>
+                                    <td class="w-[26.4%] border-r border-customDarkBlue text-center">{{item.email}}</td>
+                                </tr>
+                            }
+                        } @else {
+                            @for (item of usuariosEspecialista; track $index) {
+                                <tr class="w-full bg-slate-100 font-medium text-customDarkBlue min-h-9">
+                                    <td class="w-[12.2%] border-r border-customDarkBlue text-center">{{item.dni}}</td>
+                                    <td class="w-[14.2%] border-r border-customDarkBlue text-center">{{item.name}}</td>
+                                    <td class="w-[14.2%] border-r border-customDarkBlue text-center">{{item.lastname}}</td>
+                                    <td class="w-[6.2%] border-r border-customDarkBlue text-center">{{item.edad}}</td>
+                                    <td class="w-[14.2%] border-r border-customDarkBlue text-center">{{item.especialidad}}</td>
+                                    <td class="w-[23.2%] border-r border-customDarkBlue text-center text-sm">{{item.email}}</td>
+                                    <td class="w-[15.2%]">
+                                        @if (!item.aceptadoPorAdmin) {
+                                            <div class="flex flex-row justify-evenly">
+                                                <img (click)="manejarAccionesEspecialista('aceptar', item)" src="/assets/seccionUsuarios/aceptar.png" alt="" class="h-7 w-7 hover:scale-95 transition-all cursor-pointer">
+                                                <img (click)="manejarAccionesEspecialista('rechazar', item)" src="/assets/seccionUsuarios/rechazar.png" alt="" class="h-7 w-7 hover:scale-95 transition-all cursor-pointer">
+                                            </div>
+                                        } @else {
+                                            <p class="text-center font-black italic">Aceptado</p>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>    
+                </table>    
+            </div>
+        </div>
+    </div>
+    <!-- <div class="group h-12 w-12 rounded-full absolute left-0 bottom-0 m-4 bg-customBlue text-white flex flex-row gap-2 justify-center items-center shadow-2xl overflow-hidden cursor-pointer hover:w-44 hover:scale-95 hover:bg-customDarkBlue transition-all">
+        <p class="font-black text-5xl group-hover:hidden transition-all duration-300">+</p>
+        <p class="hidden font-black text- group-hover:block transition-all duration-300">Agregar usuario</p>
+    </div> -->
+</div>
