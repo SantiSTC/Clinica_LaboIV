@@ -23,25 +23,25 @@ Bienvenido/a a la página web de la Clínica Online, un sistema diseñado para f
 Aquí se muestran algunas capturas de pantalla del sistema para familiarizarte con la interfaz y las funcionalidades principales.
 
 - **Bienvenida**
-- ![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/d51893d1-e99a-4a83-b2b4-8d0801b10bc7)
+- >![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/d51893d1-e99a-4a83-b2b4-8d0801b10bc7)
 
 - **Registro de usuarios**
-- ![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/ca9d846e-f9ce-491b-8ce9-74f91125c74b)
+- >![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/ca9d846e-f9ce-491b-8ce9-74f91125c74b)
 
 - **Registro de Especialistas**
-- ![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/6553b7f4-a653-4181-b4d2-0dc87ae08bda)
+- >![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/6553b7f4-a653-4181-b4d2-0dc87ae08bda)
 
 - **Registro de Pacientes**
-- ![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/cf3d205f-06e9-4c4e-b520-0ee1ecb0ad38)
+- >![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/cf3d205f-06e9-4c4e-b520-0ee1ecb0ad38)
 
 - **Inicio de Sesión**
-- ![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/a7a4d18b-9759-4227-8cac-e5a301f69b5b)
+- >![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/a7a4d18b-9759-4227-8cac-e5a301f69b5b)
 
 - **Pantalla de usuarios 'Paciente' del administrador**
-- ![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/c397f3ea-33eb-4060-b446-0bd78dee3db3)
+- >![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/c397f3ea-33eb-4060-b446-0bd78dee3db3)
 
 - **Pantalla de usuarios 'Especialista' del administrador**
-- ![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/0ea4f02e-7231-4138-8bb6-15ec7b46c1aa)
+- >![image](https://github.com/SantiSTC/Clinica_LaboIV/assets/89161674/0ea4f02e-7231-4138-8bb6-15ec7b46c1aa)
 
 
 ## Tecnologías utilizadas
