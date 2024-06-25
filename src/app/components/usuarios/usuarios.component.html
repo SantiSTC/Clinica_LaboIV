@@ -1,6 +1,6 @@
 
 <div class="h-screen w-screen flex flex-col overflow-x-hidden">
-    <div class="h-16 w-full flex flex-row items-center justify-between px-6 bg-customDarkBlue z-50">
+    <div class="h-16 min-h-16 w-full flex flex-row items-center justify-between px-6 bg-customDarkBlue z-50">
         <div class="h-full flex flex-1 items-center flex-row gap-4">
             <img src="/assets/clinica.png" alt="" class="h-7 w-7">
             <h1 class="text-slate-100 font-bold text-xl">Sección Usuarios</h1>
@@ -146,7 +146,7 @@
         </div>
     }
     <div class="h-full w-full flex flex-col bg-slate-200">
-        <div class="h-12 w-full flex flex-row">
+        <div class="h-12 min-h-12 w-full flex flex-row">
             @if (verUsuariosTipo === "paciente") {
                 <div class="h-full w-full flex flex-1 justify-center items-center">
                     <p class="text-xl font-bold text-customDarkBlue">Pacientes</p>
@@ -164,60 +164,81 @@
             }
         </div>
         <div class="h-full w-full flex justify-center items-center">
-            <div class="h-[90%] w-[95%] rounded-md border-2 border-customDarkBlue">
+            <div class="h-[90%] max-h-[90%] w-[95%] rounded-md border-2 border-customDarkBlue overflow-y-auto">
                 <table class="w-full h-full">
                     <thead class="w-full">
                         @if (verUsuariosTipo === "paciente") {
                             <tr class="w-full h-8 bg-customDarkBlue text-slate-100">
-                                <th class="w-[12.2%]">DNI</th>
-                                <th class="w-[14.2%]">Nombre</th>
-                                <th class="w-[20.2%]">Apellido</th>
-                                <th class="w-[6.2%]">Edad</th>
-                                <th class="w-[20.2%]">Obra social</th>
-                                <th class="w-[26.4%]">Email</th> 
+                                <th class="flex-1">DNI</th>
+                                <th class="flex-1">Nombre</th>
+                                <th class="flex-1">Apellido</th>
+                                <th class="flex-1">Edad</th>
+                                <th class="flex-1">Obra social</th>
+                                <th class="flex-1">Email</th>
+                                <th class="flex-1">Imagenes</th>
+
                             </tr>
                         } @else {
                             <tr class="w-full h-8 bg-customDarkBlue text-slate-100">
-                                <th class="w-[12.2%]">DNI</th>
-                                <th class="w-[14.2%]">Nombre</th>
-                                <th class="w-[14.2%]">Apellido</th>
-                                <th class="w-[6.2%]">Edad</th>
-                                <th class="w-[14.2%]">Especialidad</th>
-                                <th class="w-[23.2%]">Email</th>
-                                <th class="w-[15.2%]">Acciones</th> 
+                                <th class="flex-1">DNI</th>
+                                <th class="flex-1">Nombre</th>
+                                <th class="flex-1">Apellido</th>
+                                <th class="flex-1">Edad</th>
+                                <th class="flex-1">Especialidad</th>
+                                <th class="flex-1">Email</th>
+                                <th class="flex-1">Foto</th>
+                                <th class="flex-1">Habilitado</th> 
                             </tr>
                         }
                     </thead>
-                    <tbody class="w-full overflow-y-auto">
+                    <tbody class="w-full">
                         @if (verUsuariosTipo === "paciente") {
                             @for (item of usuariosPaciente; track $index) {
-                                <tr class="w-full bg-slate-100 font-medium text-customDarkBlue">
-                                    <td class="w-[12.2%] border-r border-customDarkBlue text-center">{{item.dni}}</td>
-                                    <td class="w-[14.2%] border-r border-customDarkBlue text-center">{{item.name}}</td>
-                                    <td class="w-[20.2%] border-r border-customDarkBlue text-center">{{item.lastname}}</td>
-                                    <td class="w-[6.2%] border-r border-customDarkBlue text-center">{{item.edad}}</td>
-                                    <td class="w-[20.2%] border-r border-customDarkBlue text-center">{{item.obrasocial}}</td>
-                                    <td class="w-[26.4%] border-r border-customDarkBlue text-center">{{item.email}}</td>
+                                <tr class="w-full bg-slate-100 font-medium text-customDarkBlue min-h-11">
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.dni}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.name}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.lastname}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.edad}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.obrasocial}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.email}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">
+                                        <div class="flex flex-row justify-evenly">
+                                            <img src={{item.foto1}} alt="" class="h-10 w-10 rounded-lg">
+                                            <img src={{item.foto2}} alt="" class="h-10 w-10 rounded-lg">
+                                        </div>
+                                    </td>
                                 </tr>
                             }
                         } @else {
                             @for (item of usuariosEspecialista; track $index) {
-                                <tr class="w-full bg-slate-100 font-medium text-customDarkBlue min-h-9">
-                                    <td class="w-[12.2%] border-r border-customDarkBlue text-center">{{item.dni}}</td>
-                                    <td class="w-[14.2%] border-r border-customDarkBlue text-center">{{item.name}}</td>
-                                    <td class="w-[14.2%] border-r border-customDarkBlue text-center">{{item.lastname}}</td>
-                                    <td class="w-[6.2%] border-r border-customDarkBlue text-center">{{item.edad}}</td>
-                                    <td class="w-[14.2%] border-r border-customDarkBlue text-center">{{item.especialidad}}</td>
-                                    <td class="w-[23.2%] border-r border-customDarkBlue text-center text-sm">{{item.email}}</td>
-                                    <td class="w-[15.2%]">
-                                        @if (!item.aceptadoPorAdmin) {
-                                            <div class="flex flex-row justify-evenly">
-                                                <img (click)="manejarAccionesEspecialista('aceptar', item)" src="/assets/seccionUsuarios/aceptar.png" alt="" class="h-7 w-7 hover:scale-95 transition-all cursor-pointer">
-                                                <img (click)="manejarAccionesEspecialista('rechazar', item)" src="/assets/seccionUsuarios/rechazar.png" alt="" class="h-7 w-7 hover:scale-95 transition-all cursor-pointer">
-                                            </div>
-                                        } @else {
-                                            <p class="text-center font-black italic">Aceptado</p>
-                                        }
+                                <tr class="w-full bg-slate-100 font-medium text-customDarkBlue min-h-12">
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.dni}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.name}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.lastname}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.edad}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.especialidad}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center text-sm">{{item.email}}</td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center text-sm h-full flex justify-center items-center"><img src={{item.foto1}} alt="" class="h-10 w-10 rounded-lg"></td>
+                                    <td class="flex-1">
+                                        <div class="flex justify-center">
+                                            <label class="switch">
+                                                <input (click)="manejarAccionesEspecialista(item)" [checked]="item.aceptadoPorAdmin" type="checkbox">
+                                                <div class="slider">
+                                                    <div class="circle">
+                                                        <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                                            <g>
+                                                                <path data-original="#000000" fill="currentColor" d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0"></path>
+                                                            </g>
+                                                        </svg>
+                                                        <svg class="checkmark" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 24 24" y="0" x="0" height="10" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                                            <g>
+                                                                <path class="" data-original="#000000" fill="currentColor" d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"></path>
+                                                            </g>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -227,8 +248,8 @@
             </div>
         </div>
     </div>
-    <!-- <div class="group h-12 w-12 rounded-full absolute left-0 bottom-0 m-4 bg-customBlue text-white flex flex-row gap-2 justify-center items-center shadow-2xl overflow-hidden cursor-pointer hover:w-44 hover:scale-95 hover:bg-customDarkBlue transition-all">
+    <!-- <div (click)="ver()" class="group h-12 w-12 rounded-full absolute left-0 bottom-0 m-4 bg-customBlue text-white flex flex-row gap-2 justify-center items-center shadow-2xl overflow-hidden cursor-pointer hover:w-44 hover:scale-95 hover:bg-customDarkBlue transition-all">
         <p class="font-black text-5xl group-hover:hidden transition-all duration-300">+</p>
-        <p class="hidden font-black text- group-hover:block transition-all duration-300">Agregar usuario</p>
+        <p class="hidden font-black text- group-hover:block transition-all duration-300">Ver</p>
     </div> -->
 </div>

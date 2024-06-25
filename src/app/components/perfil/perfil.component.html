@@ -1,0 +1,68 @@
+
+<div class="h-screen w-screen flex flex-col overflow-x-hidden">
+    <div class="h-16 min-h-16 w-full flex flex-row items-center justify-between px-6 bg-customDarkBlue z-50">
+        <div class="h-full flex flex-1 items-center flex-row gap-4">
+            <img src="/assets/clinica.png" alt="" class="h-7 w-7">
+            <h1 class="text-slate-100 font-bold text-xl">Clinica</h1>
+        </div>
+        <div class="w-full h-full flex flex-1 items-center justify-end flex-row gap-12">
+            <button routerLink="/home" class="group h-8 w-24 rounded-full font-semibold bg-slate-100 text-customDarkBlue flex flex-row gap-1 justify-center items-center shadow-2xl hover:bg-customBlue hover:text-slate-100 transition-colors">
+                <img src="/assets/home-azul.png" class="h-4 w-4 block group-hover:hidden" >
+                <img src="/assets/home.png" class="hidden h-4 w-4 group-hover:block" >
+                <p class="text-sm font-semibold mt-px">Home</p>
+            </button>
+            <button routerLink="/perfil" class="rounded-full flex justify-center items-center shadow-2xl pr-6">
+                <img src={{user.foto1}} alt="" class="h-10 w-10 rounded-full fixed">
+            </button>
+        </div>
+        <div class="h-full w-12 flex justify-center items-center -ml-3">
+            <img (click)="toggleCerrandoSesion()" src="/assets/volver.png" alt="" class="h-3 w-3 -rotate-90 cursor-pointer">
+        </div>
+    </div>
+    @if (cerrandoSesion) {
+        <div class="w-full flex justify-end">
+            <div (click)="cerrarSesion()" class="w-32 h-10 rounded-md flex justify-center items-center flex-row gap-1.5 cursor-pointer mr-[2%] mt-1 bg-red-600 hover:bg-red-800 transition-all">
+                <img src="/assets/volver.png" alt="" class="h-4 w-4 cursor-pointer">
+                <p class="text-sm font-medium text-white whitespace-nowrap">Cerrar Sesión</p>
+            </div>
+        </div>
+    }
+    <div class="h-full w-full flex flex-col bg-slate-200">
+        <div class="h-full w-full flex justify-center items-center flex-row">
+            <div class="w-full h-full flex items-center justify-start flex-col p-8 gap-4">
+                <p class="text-customDarkBlue font-bold text-3xl">Mi perfil</p>
+                <div class="flex flex-col gap-4 items-start">
+                    <div class="mt-8 flex flex-row gap-1.5 justify-center items-center">
+                        <p class="text-lg font-medium text-customDarkBlue">Nombre:</p>
+                        <p class="text-lg font-bold text-customDarkBlue">{{user.name + " " + user.lastname}}</p>
+                    </div>
+                    <div class="flex flex-row gap-1.5 justify-center items-center">
+                        <p class="text-lg font-medium text-customDarkBlue">Edad:</p>
+                        <p class="text-lg font-bold text-customDarkBlue">{{user.edad}}</p>
+                    </div>
+                    <div class="flex flex-row gap-1.5 justify-center items-center">
+                        <p class="text-lg font-medium text-customDarkBlue">DNI:</p>
+                        <p class="text-lg font-bold text-customDarkBlue">{{user.dni}}</p>
+                    </div>
+                    @if (user.type == 'especialista') {
+                        <div class="flex flex-row gap-1.5 justify-center items-center">
+                            <p class="text-lg font-medium text-customDarkBlue">Especialidades:</p>
+                            <p class="text-lg font-bold text-customDarkBlue">{{user.especialidad}}</p>
+                        </div>
+                    } @else {
+                        <div class="flex flex-row gap-1.5 justify-center items-center">
+                            <p class="text-lg font-medium text-customDarkBlue">Obra Social:</p>
+                            <p class="text-lg font-bold text-customDarkBlue">{{user.obrasocial}}</p>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="w-full h-full flex items-center justify-start flex-col p-8">
+                <img src={{user.foto1}} alt="" class="rounded-md h-52 w-52 mt-16">
+                @if(user.type == 'paciente') {
+                    <img src={{user.foto2}} alt="" class="rounded-md h-52 w-52">
+                }
+            </div>
+        </div>
+    </div>
+</div>

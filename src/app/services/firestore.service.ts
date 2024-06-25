@@ -12,21 +12,21 @@ export class FirestoreService {
     return addDoc(coleccion, obj);
   }
 
-  traer(col: string, fieldToOrder?: string, direction: string = "asc") {
+  traer(col: string, fieldToOrder?: string, direction: string = "asc", conditions: any[] = []): Observable<any[]> {
     let coleccion = collection(this.firestore, col);
     let q;
 
-    if(fieldToOrder) {
-      if(direction === "asc") {
-        q = query(coleccion, orderBy(fieldToOrder, "asc"));
+    if (fieldToOrder) {
+      if (direction === "asc") {
+        q = query(coleccion, ...conditions, orderBy(fieldToOrder, "asc"));
       } else {
-        q = query(coleccion, orderBy(fieldToOrder, "desc"));
+        q = query(coleccion, ...conditions, orderBy(fieldToOrder, "desc"));
       }
     } else {
-      q = query(coleccion);
+      q = query(coleccion, ...conditions);
     }
 
-    return collectionData(q, {idField: "id"}) as Observable<any[]>;
+    return collectionData(q, { idField: "id" }) as Observable<any[]>;
   }
 
   async actualizar(col: string, obj: any) {
@@ -50,4 +50,5 @@ export class FirestoreService {
       return error;
     }
   }
+  
 }

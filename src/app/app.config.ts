@@ -6,22 +6,24 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
-
+import { provideFunctions, getFunctions } from '@angular/fire/functions';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideFirebaseApp(() =>
       initializeApp({
-        projectId: 'clinicaonline-iannello',
-        appId: '1:229039981284:web:bbe421b7310900ea12a2f1',
-        storageBucket: 'gs://clinicaonline-iannello.appspot.com',
-        apiKey: 'AIzaSyBECwwDBDh6pAoWhMS4TI4-g2XJWdbhUBY',
-        authDomain: 'clinicaonline-iannello.firebaseapp.com',
-        messagingSenderId: '229039981284',
+        apiKey: "AIzaSyDAkw9hDtvHS1XtBMF15Kae4VZFyPpr2xw",
+        authDomain: "clinicaonline2-iannello.firebaseapp.com",
+        projectId: "clinicaonline2-iannello",
+        storageBucket: "clinicaonline2-iannello.appspot.com",
+        messagingSenderId: "1056722608921",
+        appId: "1:1056722608921:web:07502cf0394f3bb4501b88"
       })
     ),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
+    provideFunctions(() => getFunctions())
   ],
+
 };

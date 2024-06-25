@@ -9,5 +9,9 @@ import { RouterLink } from '@angular/router';
   styleUrl: './bienvenida.component.css'
 })
 export class BienvenidaComponent {
+  menuAbierto: boolean = false;
 
+  abrirCerrarMenu() {
+    this.menuAbierto = !this.menuAbierto;
+  }
 }

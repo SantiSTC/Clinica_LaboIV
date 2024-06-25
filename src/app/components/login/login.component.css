@@ -1,0 +1,60 @@
+.btn-shine {
+    color: #fff;
+    background: linear-gradient(to right, #294380 0, #0d0f36 10%, #69d2cd 20%);
+    background-position: 0;
+    background-clip: border-box;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 3s infinite linear;
+    animation-fill-mode: forwards;
+    -webkit-text-size-adjust: none;
+    font-weight: 600;
+    font-size: 24px;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  @-moz-keyframes shine {
+    0% {
+      background-position: 0;
+    }
+    60% {
+      background-position: 275px;
+    }
+    100% {
+      background-position: 275px;
+    }
+  }
+  @-webkit-keyframes shine {
+    0% {
+      background-position: 0;
+    }
+    60% {
+      background-position: 275px;
+    }
+    100% {
+      background-position: 275px;
+    }
+  }
+  @-o-keyframes shine {
+    0% {
+      background-position: 0;
+    }
+    60% {
+      background-position: 275px;
+    }
+    100% {
+      background-position: 275px;
+    }
+  }
+  @keyframes shine {
+    0% {
+      background-position: 0;
+    }
+    60% {
+      background-position: 275px;
+    }
+    100% {
+      background-position: 275px;
+    }
+  }
+  

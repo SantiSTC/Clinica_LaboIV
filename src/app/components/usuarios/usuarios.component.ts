@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FirestoreService } from '../../services/firestore.service';
-import { Subscription } from 'rxjs';
+import { Subscription, elementAt } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { StorageService } from '../../services/storage.service';
@@ -23,6 +23,9 @@ export class UsuariosComponent implements OnInit {
   observable: Subscription = new Subscription();
   usuariosPaciente: any[] = [];
   usuariosEspecialista: any[] = [];
+
+  fotosPaciente: any[] = [];
+  fotosEspecialista: any[] = [];
 
   verUsuariosTipo: string = 'paciente';
 
@@ -48,13 +51,13 @@ export class UsuariosComponent implements OnInit {
   
   constructor( private router: Router, private auth: AuthService, private firestore: FirestoreService, private storage: StorageService ) {}
 
-  manejarAccionesEspecialista(accion: string, especialista: any){
-    if(accion == 'aceptar') {
-      especialista.aceptadoPorAdmin = true;
-      this.firestore.actualizar("usuarios", especialista);
-    } else {
-      this.firestore.eliminar("usuarios", especialista.id);
-    }
+  manejarAccionesEspecialista(especialista: any){
+    especialista.aceptadoPorAdmin = !especialista.aceptadoPorAdmin;
+    this.firestore.actualizar("usuarios", especialista);
+  }
+
+  ver() {
+    console.log("aaaaaa")
   }
 
   onFileSelected(event: any, nombreFoto: string) {
@@ -148,7 +151,6 @@ export class UsuariosComponent implements OnInit {
           this.agregandoUsuario = false;
           let mensaje;
   
-          console.log(err);
           switch(err.code)
           {
             case 'auth/email-already-in-use':
@@ -189,7 +191,7 @@ export class UsuariosComponent implements OnInit {
     this.agregandoUsuario = false;
   } 
 
-  ngOnInit() {
+  async ngOnInit() {
     // Traer info usuario actual
     this.userSubscription = this.auth.userActual$.subscribe(
       (user) => {
@@ -199,7 +201,11 @@ export class UsuariosComponent implements OnInit {
     );
 
     // Firestore traer info usuarios 
-    this.observable = this.firestore.traer("usuarios").subscribe((usuariosData: any) => {
+    this.observable = await this.firestore.traer("usuarios").subscribe((usuariosData: any) => {
+      this.usuariosPaciente = [];
+      this.usuariosEspecialista = [];
+      this.usuarios = [];
+
       this.usuarios = usuariosData;
       let permitido = false;
 
@@ -208,10 +214,23 @@ export class UsuariosComponent implements OnInit {
           permitido = true;
         } 
 
-        if(element.type == 'paciente'){
-          this.usuariosPaciente.push(element);
-        } else if(element.type == 'especialista'){
-          this.usuariosEspecialista.push(element);
+        if(element.type == 'paciente' && !this.usuariosPaciente.some(paciente => paciente.id === element.id)){
+          this.storage.obtenerFotosDelUsuario('pacientes', element.dni.toString()).then((data) => {
+            element.foto1 = data[0].url;
+            // element.foto2 = data[1].url;
+            if(!this.usuariosPaciente.includes(element)) {
+              this.usuariosPaciente.push(element);
+            }
+          }) .catch((err) => {
+            console.log("HUBO UN ERROR");
+          }) 
+        } else if(element.type == 'especialista' && !this.usuariosEspecialista.some(especialista => especialista.id === element.id)){
+          this.storage.obtenerFotosDelUsuario('especialistas', element.dni.toString()).then((data) => {
+            element.foto1 = data[0].url;
+            if(!this.usuariosEspecialista.includes(element)) {
+              this.usuariosEspecialista.push(element);
+            }
+          })  
         }
       });
 
@@ -219,5 +238,10 @@ export class UsuariosComponent implements OnInit {
         this.router.navigateByUrl("home");
       }
     });
+  }
+
+  ngOnDestroy() {
+    this.userSubscription.unsubscribe();
+    this.observable.unsubscribe();
   }
 }

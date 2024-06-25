@@ -5,12 +5,11 @@ import Swal from 'sweetalert2';
 import { AuthService } from '../../services/auth.service';
 import { FirestoreService } from '../../services/firestore.service';
 import { StorageService } from '../../services/storage.service';
-import { SpinnerComponent } from '../spinner/spinner.component';
 
 @Component({
   selector: 'app-signup',
   standalone: true,
-  imports: [FormsModule, RouterLink, SpinnerComponent],
+  imports: [FormsModule, RouterLink],
   templateUrl: './signup.component.html',
   styleUrl: './signup.component.css'
 })
@@ -30,13 +29,19 @@ export class SignupComponent implements OnInit {
   nombreFoto1: string = '';
   nombreFoto2: string = '';
 
-  userType: string = 'paciente';
+  userType: string = '';
 
   usuario: any;
 
   todosLosCamposCompletos: boolean = false;
 
   spinner: boolean = false;
+
+  random1!: number;
+  ranodm2!: number;
+  resultado!: number;
+  captchaCorrecto: boolean = false;
+  mensaje: string = "Resuelve el siguente ejercicio para demostrar que eres humano:";
 
   constructor( private auth: AuthService, private router: Router, private firestore: FirestoreService, private storage: StorageService ) {}
 
@@ -57,6 +62,7 @@ export class SignupComponent implements OnInit {
           email: this.email,
           especialidad: this.especialidadElegida,
           aceptadoPorAdmin: false,
+          foto1: "",
         }
 
         this.storage.subirFoto(this.foto1, 'especialistas', this.dni, this.nombreFoto1);
@@ -73,68 +79,79 @@ export class SignupComponent implements OnInit {
           dni: this.dni,
           email: this.email,
           obrasocial: this.obrasocial,
+          foto1: "",
+          foto2: "",
         }
 
         this.storage.subirFoto(this.foto1, 'pacientes', this.dni, this.nombreFoto1);
-        this.storage.subirFoto(this.foto2, 'pacientes', this.dni, this.nombreFoto2);
+        this.storage.subirFoto(this.foto2, 'especialistas', this.dni, this.nombreFoto2);
       }
     }
 
     if(this.todosLosCamposCompletos) {
-      this.auth.register(this.email, this.password)?.then(
-        (data) => {
-          this.firestore.guardar("usuarios", this.usuario).then(() => {
-            this.name = '';
-            this.lastname = '';
-            this.edad = 0;
-            this.dni = 0;
-            this.especialidad = '';
-            this.obrasocial = '';
-            this.email = '';
-            this.password = '';
-            this.otraEspecialidad = '';
-            this.foto1 = null;
-            this.foto2 = null;
-            this.especialidadElegida = '';
-            this.nombreFoto1 = '';
-            this.nombreFoto2 = '';
-          });
-        }
-      ).catch(
-        (err) => {
-          this.spinner = false;
-          let mensaje;
-  
-          console.log(err);
-          switch(err.code)
-          {
-            case 'auth/email-already-in-use':
-              mensaje = 'El correo electrónico ya está registrado.';
-              break;
-            case 'auth/invalid-email':
-              mensaje = 'El correo electrónico no es válido.';
-              break;
-            case 'auth/weak-password':
-              mensaje = 'La contraseña es demasiado débil.';
-              break;
-            case 'auth/operation-not-allowed':
-              mensaje = 'Esta operación no está permitida.';
-              break;
-            case 'auth/too-many-requests':
-              mensaje = 'Demasiados intentos, intente nuevamente más tarde.';
-              break;
-            default:
-              mensaje = 'Ocurrió un error. Por favor, inténtalo de nuevo.';
+      if(this.captchaCorrecto) {
+        this.auth.register(this.email, this.password)?.then(
+          (data) => {
+            this.firestore.guardar("usuarios", this.usuario).then(() => {
+              this.name = '';
+              this.lastname = '';
+              this.edad = 0;
+              this.dni = 0;
+              this.especialidad = '';
+              this.obrasocial = '';
+              this.email = '';
+              this.password = '';
+              this.otraEspecialidad = '';
+              this.foto1 = null;
+              this.foto2 = null;
+              this.especialidadElegida = '';
+              this.nombreFoto1 = '';
+              this.nombreFoto2 = '';
+            });
           }
-  
-          Swal.fire({
-            title: "Error",
-            text: mensaje,
-            icon: "error",
-            heightAuto: false,
-          });
-        }
-      );
+        ).catch(
+          (err) => {
+            this.spinner = false;
+            let mensaje;
+    
+            console.log(err);
+            switch(err.code)
+            {
+              case 'auth/email-already-in-use':
+                mensaje = 'El correo electrónico ya está registrado.';
+                break;
+              case 'auth/invalid-email':
+                mensaje = 'El correo electrónico no es válido.';
+                break;
+              case 'auth/weak-password':
+                mensaje = 'La contraseña es demasiado débil.';
+                break;
+              case 'auth/operation-not-allowed':
+                mensaje = 'Esta operación no está permitida.';
+                break;
+              case 'auth/too-many-requests':
+                mensaje = 'Demasiados intentos, intente nuevamente más tarde.';
+                break;
+              default:
+                mensaje = 'Ocurrió un error. Por favor, inténtalo de nuevo.';
+            }
+    
+            Swal.fire({
+              title: "Error",
+              text: mensaje,
+              icon: "error",
+              heightAuto: false,
+            });
+          }
+        );
+      } else {
+        Swal.fire({
+          title: "Error",
+          text: "Debes completar el CAPTCHA antes de registrarte.",
+          icon: "error",
+          heightAuto: false,
+        });
+      }
     } else {
       Swal.fire({
         title: "Error",
@@ -157,7 +174,26 @@ export class SignupComponent implements OnInit {
     } 
   }
 
+  captchaEnviado() {
+    if(this.random1 + this.ranodm2 == this.resultado) {
+      this.captchaCorrecto = true;
+    } else {
+      this.mensaje = "ERROR!";
+      this.resultado = 0;
+      setTimeout(() => {
+        this.mensaje = "Resuelve el siguente ejercicio para demostrar que eres humano:";
+        this.obtenerRandoms();
+      }, 3000);
+    }
+  }
+
+  obtenerRandoms() {
+    this.random1 = Math.floor(Math.random() * 10) + 1;
+    this.ranodm2 = Math.floor(Math.random() * 10) + 1;
+  }
+
   ngOnInit() {
-    console.log("");
+    this.userType = '';
+    this.obtenerRandoms();
   }
 }

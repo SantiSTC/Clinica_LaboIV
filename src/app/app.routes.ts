@@ -32,6 +32,12 @@ export const routes: Routes = [
         ),
     },
     {
+        path: "perfil",
+        loadComponent: () => import('./components/perfil/perfil.component').then(
+            (m) => m.PerfilComponent,
+        ),
+    },
+    {
         path: "",
         redirectTo: "bienvenida",
         pathMatch: "full",
