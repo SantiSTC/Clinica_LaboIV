@@ -12,7 +12,7 @@
                 <p class="text-sm font-semibold mt-px">Home</p>
             </button>
             <button routerLink="/perfil" class="rounded-full flex justify-center items-center shadow-2xl pr-6">
-                <img src={{user.foto1}} alt="" class="h-10 w-10 rounded-full fixed">
+                <img src={{user.foto1}} alt="" class="h-10 w-10 rounded-full  sticky">
             </button>
         </div>
         <div class="h-full w-12 flex justify-center items-center -ml-3">
@@ -29,39 +29,50 @@
     }
     <div class="h-full w-full flex flex-col bg-slate-200">
         <div class="h-full w-full flex justify-center items-center flex-row">
-            <div class="w-full h-full flex items-center justify-start flex-col p-8 gap-4">
-                <p class="text-customDarkBlue font-bold text-3xl">Mi perfil</p>
-                <div class="flex flex-col gap-4 items-start">
-                    <div class="mt-8 flex flex-row gap-1.5 justify-center items-center">
-                        <p class="text-lg font-medium text-customDarkBlue">Nombre:</p>
-                        <p class="text-lg font-bold text-customDarkBlue">{{user.name + " " + user.lastname}}</p>
-                    </div>
-                    <div class="flex flex-row gap-1.5 justify-center items-center">
-                        <p class="text-lg font-medium text-customDarkBlue">Edad:</p>
-                        <p class="text-lg font-bold text-customDarkBlue">{{user.edad}}</p>
-                    </div>
-                    <div class="flex flex-row gap-1.5 justify-center items-center">
-                        <p class="text-lg font-medium text-customDarkBlue">DNI:</p>
-                        <p class="text-lg font-bold text-customDarkBlue">{{user.dni}}</p>
-                    </div>
-                    @if (user.type == 'especialista') {
-                        <div class="flex flex-row gap-1.5 justify-center items-center">
-                            <p class="text-lg font-medium text-customDarkBlue">Especialidades:</p>
-                            <p class="text-lg font-bold text-customDarkBlue">{{user.especialidad}}</p>
+            <div class="w-full h-full flex items-center justify-start flex-col p-8 gap-8">
+                <div class="flex flex-col items-center justify-start gap-7 bg-white py-8 px-20 rounded-md">
+                    <p class="text-customDarkBlue font-bold text-3xl">Mi perfil</p>
+                    <div class="flex flex-col gap-4 items-start">
+                        <div class="mt-5 flex flex-row gap-1.5 justify-center items-center">
+                            <p class="text-lg font-medium text-customDarkBlue">Nombre:</p>
+                            <p class="text-lg font-bold text-customDarkBlue">{{user.name + " " + user.lastname}}</p>
                         </div>
-                    } @else {
                         <div class="flex flex-row gap-1.5 justify-center items-center">
-                            <p class="text-lg font-medium text-customDarkBlue">Obra Social:</p>
-                            <p class="text-lg font-bold text-customDarkBlue">{{user.obrasocial}}</p>
+                            <p class="text-lg font-medium text-customDarkBlue">Edad:</p>
+                            <p class="text-lg font-bold text-customDarkBlue">{{user.edad}}</p>
                         </div>
-                    }
+                        <div class="flex flex-row gap-1.5 justify-center items-center">
+                            <p class="text-lg font-medium text-customDarkBlue">DNI:</p>
+                            <p class="text-lg font-bold text-customDarkBlue">{{user.dni}}</p>
+                        </div>
+                        @if (user.type == 'especialista') {
+                            <div class="flex flex-row gap-1.5 justify-center items-center">
+                                <p class="text-lg font-medium text-customDarkBlue">Especialidades:</p>
+                                <p class="text-lg font-bold text-customDarkBlue">{{user.especialidad}}</p>
+                            </div>
+                        } @else {
+                            <div class="flex flex-row gap-1.5 justify-center items-center">
+                                <p class="text-lg font-medium text-customDarkBlue">Obra Social:</p>
+                                <p class="text-lg font-bold text-customDarkBlue">{{user.obrasocial}}</p>
+                            </div>
+                            <div class="flex justify-center w-full">
+                                <button (click)="irAHistoriaClinico()" class="bg-customDarkBlue px-5 py-2.5 flex justify-center items-center rounded-md shadow-lg text-white font-semibold hover:shadow-none hover:bg-customLightBlue hover:scale-95 transition-all duration-300">Ver historia clinica</button>
+                            </div>
+                            <div class="flex justify-center w-full">
+                                <button (click)="generatePDF()" class="bg-customDarkBlue px-5 py-2.5 flex justify-center items-center rounded-md shadow-lg text-white font-semibold hover:shadow-none hover:bg-customLightBlue hover:scale-95 transition-all duration-300">Descargar historia clinica</button>
+                            </div>
+                        }
+                        
+                    </div>
                 </div>
             </div>
-            <div class="w-full h-full flex items-center justify-start flex-col p-8">
-                <img src={{user.foto1}} alt="" class="rounded-md h-52 w-52 mt-16">
-                @if(user.type == 'paciente') {
-                    <img src={{user.foto2}} alt="" class="rounded-md h-52 w-52">
-                }
+            <div class="w-full h-full flex items-center justify-start flex-col p-8 gap-4">
+                <div class="flex flex-row items-start justify-center gap-6 p-6 bg-white rounded-md">
+                    <img src={{user.foto1}} alt="" class="rounded-md h-52 w-52">
+                    @if(user.type == 'paciente' || user.type == 'admin') {
+                        <img src={{user.foto2}} alt="" class="rounded-md h-52 w-52">
+                    }
+                </div>
             </div>
         </div>
     </div>

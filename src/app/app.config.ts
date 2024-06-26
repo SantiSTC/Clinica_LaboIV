@@ -7,6 +7,8 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideFunctions, getFunctions } from '@angular/fire/functions';
+import { provideAnimations } from '@angular/platform-browser/animations';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
@@ -23,7 +25,8 @@ export const appConfig: ApplicationConfig = {
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideStorage(() => getStorage()),
-    provideFunctions(() => getFunctions())
+    provideFunctions(() => getFunctions()),
+    provideAnimations(),
   ],
 
 };

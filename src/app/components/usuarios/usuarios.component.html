@@ -176,7 +176,7 @@
                                 <th class="flex-1">Obra social</th>
                                 <th class="flex-1">Email</th>
                                 <th class="flex-1">Imagenes</th>
-
+                                <th class="flex-1">Historia Clinica</th>
                             </tr>
                         } @else {
                             <tr class="w-full h-8 bg-customDarkBlue text-slate-100">
@@ -204,8 +204,11 @@
                                     <td class="flex-1 border-r border-customDarkBlue text-center">
                                         <div class="flex flex-row justify-evenly">
                                             <img src={{item.foto1}} alt="" class="h-10 w-10 rounded-lg">
-                                            <img src={{item.foto2}} alt="" class="h-10 w-10 rounded-lg">
+                                            <!-- <img src={{item.foto2}} alt="" class="h-10 w-10 rounded-lg"> -->
                                         </div>
+                                    </td>
+                                    <td class="flex-1 border-r border-customDarkBlue text-center p-2">
+                                        <button (click)="irAHistoriaClinico(item.dni)" class="w-full py-1 rounded-md bg-customDarkBlue text-white font-bold">Ver</button>
                                     </td>
                                 </tr>
                             }

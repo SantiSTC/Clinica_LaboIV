@@ -191,7 +191,11 @@ export class UsuariosComponent implements OnInit {
     this.agregandoUsuario = false;
   } 
 
-  async ngOnInit() {
+  irAHistoriaClinico(dni: string) {
+    this.router.navigate(['ver_hc', dni]);
+  }
+
+  ngOnInit() {
     // Traer info usuario actual
     this.userSubscription = this.auth.userActual$.subscribe(
       (user) => {
@@ -201,7 +205,7 @@ export class UsuariosComponent implements OnInit {
     );
 
     // Firestore traer info usuarios 
-    this.observable = await this.firestore.traer("usuarios").subscribe((usuariosData: any) => {
+    this.observable = this.firestore.traer("usuarios").subscribe((usuariosData: any) => {
       this.usuariosPaciente = [];
       this.usuariosEspecialista = [];
       this.usuarios = [];

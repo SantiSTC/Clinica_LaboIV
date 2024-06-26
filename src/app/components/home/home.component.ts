@@ -89,6 +89,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   spinner: boolean = false;
 
+  pacientesDelEspecialista: any[] = [];
+
 
   constructor(private router: Router, private auth: AuthService, private firestore: FirestoreService, private storage: StorageService, private turnos: TurnosService) {}
 
@@ -106,6 +108,29 @@ export class HomeComponent implements OnInit, OnDestroy {
     })
 
     return especialistas;
+  }
+
+  getPacientesDeUnEspecialista(especialista: string) {
+    let pacientes: any[] = [];
+
+    this.todosLosTurnos.forEach(element => {
+      let pacienteDelTurno;
+
+      for(let i=0; i<this.usuarios.length; i++) {
+        if((this.usuarios[i].type == "paciente" || this.usuarios[i].type == "admin") && this.usuarios[i].dni == element.paciente) {
+          pacienteDelTurno = this.usuarios[i];
+          break;
+        }
+      }
+
+      if(pacienteDelTurno) {
+        if(element.especialista == especialista && !pacientes.includes(pacienteDelTurno)) {
+          pacientes.push(pacienteDelTurno);
+        }
+      }
+    })
+
+    return pacientes;
   }
 
   onOptionChange(event: any) {
@@ -302,8 +327,8 @@ getHorariosDisponibles(dia: Date): string[] {
     // Comparar las dos fechas
     const yaPaso = givenDateTime < now;
 
-    if(yaPaso && turno.estadoDelTurno != "cancelado" && turno.estadoDelTurno != 'rechazado') {
-      turno.estadoDelTurno = 'realizado';
+    if(yaPaso && turno.estadoDelTurno == "") {
+      turno.estadoDelTurno = 'caducado';
       this.firestore.actualizar('turnos', turno);
     }
 
@@ -380,6 +405,7 @@ getHorariosDisponibles(dia: Date): string[] {
     this.firestore.traer('turnos').pipe(take(1)).subscribe((data) => {
       data.forEach(element => {
         if (element.dia == this.turnoACalificar.dia && element.hora == this.turnoACalificar.hora && element.especialista == this.turnoACalificar.especialista) {
+          alert("HOLA")
           element.calificacion = puntuacion;
           element.resenaDelPaciente = this.resenaDelPaciente;
   
@@ -442,6 +468,13 @@ getHorariosDisponibles(dia: Date): string[] {
       
               this.firestore.actualizar('turnos', element).then(() => {
                 this.resenaDelEspecialista = '';
+
+                let dia = element.dia.split("/")[0];
+                let mes = element.dia.split("/")[1];
+                let anio = element.dia.split("/")[2];
+                let fecha = dia + "_" + mes + "_" + anio
+                
+                this.router.navigate(['agregar_hc', element.paciente, element.especialista, fecha]);
               });
             }
           });
@@ -482,8 +515,16 @@ getHorariosDisponibles(dia: Date): string[] {
     this.turnoAVerCancelacion = turno;
   }
 
-  ver() {
-    console.log(this.turnosDelPaciente);
+  irAHistoriaClinico(dni: string) {
+    this.router.navigate(['ver_hc', dni]);
+  }
+
+  irAPerfil() {
+    this.router.navigate(['perfil', this.user.dni]);
+  }
+
+  ver(texto: string) {
+    console.log(texto);
   }
 
   volver() {
@@ -540,6 +581,7 @@ getHorariosDisponibles(dia: Date): string[] {
           this.todosLosTurnos = [];
           this.turnosDelPaciente = [];
           this.turnosDelEspecialista = [];
+          this.pacientesDelEspecialista = [];
 
           this.todosLosTurnos = turnosData;
 
@@ -554,12 +596,12 @@ getHorariosDisponibles(dia: Date): string[] {
               }
             }
           });
+
+          if(this.user.type == "especialista") {
+            this.pacientesDelEspecialista = this.getPacientesDeUnEspecialista(this.user.dni);
+          }
       })
     )
-
-    if(this.user.type == "paciente")
-
-    console.log(this.especialidades);
 
   }
 
