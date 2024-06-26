@@ -71,7 +71,7 @@ Aquí se muestran algunas capturas de pantalla del sistema para familiarizarte c
 
 
 ## Tecnologías utilizadas
-- **Frontend**: HTML5, CSS3, TypeScript y Angular.
+- **Frontend**: HTML5, CSS3, TailwindCSS, TypeScript y Angular.
 - **Backend**: Firebase.
 - **Base de datos**: Firebase Firestore, Firebase Storage.
 
