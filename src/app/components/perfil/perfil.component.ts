@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { StorageService } from '../../services/storage.service';
 
 @Component({
   selector: 'app-perfil',
@@ -31,7 +32,7 @@ export class PerfilComponent implements OnInit {
 
   private clinicLogo = '/assets/clinica.png';
 
-  constructor( private auth: AuthService, private firestore: FirestoreService, private router: Router, private activatedRoute: ActivatedRoute ) {}
+  constructor( private auth: AuthService, private firestore: FirestoreService, private router: Router, private activatedRoute: ActivatedRoute, private storage: StorageService ) {}
 
   irAHistoriaClinico() {
     this.router.navigate(['ver_hc', this.user.dni]);
@@ -45,18 +46,18 @@ export class PerfilComponent implements OnInit {
     logo.src = this.clinicLogo;
   
     if (logo) {
-      doc.addImage(logo, 'PNG', 10, 18, 25, 25);
+      doc.addImage(logo, 'PNG', 10, 10, 25, 25);
     }
   
     // Título e información de la historia clínica
     doc.setFontSize(18);
-    doc.text('Historia Clínica', 50, 25);
+    doc.text('Historia Clínica', 50, 18);
     doc.setFontSize(12);
-    doc.text(`Paciente: ${this.getNombreDelPaciente(this.user.dni)}`, 50, 35);
-    doc.text(`Fecha de emisión: ${new Date().toLocaleDateString()}`, 50, 42);
+    doc.text(`Paciente: ${this.getNombreDelPaciente(this.user.dni)}`, 50, 25);
+    doc.text(`Fecha de emisión: ${new Date().toLocaleDateString()}`, 50, 32);
   
     // Inicializar la posición Y
-    let yPos = 60;
+    let yPos = 50;
 
     // Agregar datos de la historia clínica
     this.historiaClinica.forEach((item, index) => {      
@@ -121,6 +122,10 @@ export class PerfilComponent implements OnInit {
             break;
           }
         }
+
+        this.storage.obtenerFotosDelUsuario(this.user.type, this.user.dni.toString()).then((data) => {
+          this.user.foto1 = data[0].url;
+        });
 
         if(this.user.dni != this.dni) {
           this.router.navigate(['perfil', this.user.dni]);

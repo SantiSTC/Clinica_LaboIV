@@ -52,6 +52,9 @@ export class StorageService {
 
   async obtenerFotosDelUsuario(folder: string, user: any,): Promise<{url: string, uploadedBy: string, uploadedAt: string}[]> {
     try {
+      if(folder == "paciente") {
+        folder = "pacientes";
+      }
       const folderRef = ref(this.storage, `imagenes/${folder}/${user}`);
       const listResult = await listAll(folderRef);
       const fotos = await Promise.all(listResult.items.map(async item => {

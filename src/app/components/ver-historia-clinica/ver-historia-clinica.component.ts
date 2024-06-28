@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HistoriaclinicaService } from '../../services/historiaclinica.service';
 import { DynamicPropertyPipe } from '../../pipes/dynamic-property.pipe';
+import { StorageService } from '../../services/storage.service';
 
 
 interface DatosDinamicos {
@@ -47,7 +48,7 @@ export class VerHistoriaClinicaComponent {
 
   datosDinamicos: Array<{ clave: string, valor: any }> = [];
 
-  constructor(private firestore: FirestoreService, private activatedRoute: ActivatedRoute, private auth:AuthService, private router: Router, private hc: HistoriaclinicaService) {}
+  constructor(private firestore: FirestoreService, private activatedRoute: ActivatedRoute, private auth:AuthService, private storage: StorageService, private router: Router, private hc: HistoriaclinicaService) {}
 
   ngOnInit() {
     this.pacienteDni = this.activatedRoute.snapshot.paramMap.get('paciente');
@@ -70,8 +71,14 @@ export class VerHistoriaClinicaComponent {
           }
         }
 
-        if(this.user.dni != this.pacienteDni) {
-          this.router.navigate(['perfil', this.user.dni]);
+        this.storage.obtenerFotosDelUsuario(this.user.type, this.user.dni.toString()).then((data) => {
+          this.user.foto1 = data[0].url;
+        });
+
+        if(this.user.type == "paciente") {
+          if(this.user.dni != this.pacienteDni) {
+            this.router.navigate(['perfil', this.user.dni]);
+          }
         }
       })
     )

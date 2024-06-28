@@ -84,7 +84,7 @@ export class SignupComponent implements OnInit {
         }
 
         this.storage.subirFoto(this.foto1, 'pacientes', this.dni, this.nombreFoto1);
-        this.storage.subirFoto(this.foto2, 'especialistas', this.dni, this.nombreFoto2);
+        this.storage.subirFoto(this.foto2, 'pacientes', this.dni, this.nombreFoto2);
       }
     }
 

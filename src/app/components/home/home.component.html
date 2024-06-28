@@ -798,16 +798,38 @@
                             <tbody class="w-full">
                                 @for (item of todosLosTurnos; track $index ) {
                                     @if (textoBuscado != '') {
-                                        @if(getNombreDelEspecialista(item.especialista).toLowerCase().includes(textoBuscado) || item.especialidad.toLowerCase().includes(textoBuscado)) {
+                                        @if(getNombreDelEspecialista(item.especialista).toLowerCase().includes(textoBuscado) || item.especialidad.toLowerCase().includes(textoBuscado) || item.dia.toLowerCase().includes(textoBuscado.toLowerCase()) ||  item.estadoDelTurno.toLowerCase().includes(textoBuscado.toLowerCase())) {
                                             <tr class="w-full bg-slate-100 font-medium text-customDarkBlue min-h-11" >
                                                 <td class="flex-1 border-r border-customDarkBlue text-center">{{getNombreDelPaciente(item.paciente)}}</td>
                                                 <td class="flex-1 border-r border-customDarkBlue text-center">{{getEspecialidadDeUnEspecialista(item.especialista)}}</td>
+                                                <td class="flex-1 border-r border-customDarkBlue text-center">{{getNombreDelEspecialista(item.especialista)}}</td>
                                                 <td class="flex-1 border-r border-customDarkBlue text-center">{{item.dia}}</td>
                                                 <td class="flex-1 border-r border-customDarkBlue text-center">{{item.hora}}</td>
+                                                @if(turnoYaPaso(item) && item.estadoDelTurno == "realizado") {
+                                                    <td class="flex-1 border-r border-customDarkBlue text-center font-bold text-green-600">{{item.estadoDelTurno.toUpperCase()}}</td>
+                                                } @else {
+                                                    @switch (item.estadoDelTurno) {
+                                                        @case ('pendiente') {
+                                                            <td class="flex-1 border-r border-customDarkBlue text-center font-bold text-yellow-500">{{item.estadoDelTurno.toUpperCase()}}</td>
+                                                        }
+                                                        @case ('aceptado') {
+                                                            <td class="flex-1 border-r border-customDarkBlue text-center font-bold text-green-600">{{item.estadoDelTurno.toUpperCase()}}</td>
+                                                        }
+                                                        @default {
+                                                            <td class="flex-1 border-r border-customDarkBlue text-center font-bold text-red-600">{{item.estadoDelTurno.toUpperCase()}}</td>
+                                                        }
+                                                    }
+                                                }
                                                 <td class="flex-1 border-r border-customDarkBlue text-center">
-                                                    <div class="w-full flex flex-col">
-    
-                                                    </div>
+                                                    @if(item.estadoDelTurno != 'realizado') {
+                                                        @if (item.estadoDelTurno != 'rechazado' && item.estadoDelTurno != 'aceptado' && item.estadoDelTurno != 'cancelado'){
+                                                            <div class="w-full flex justify-center items-center py-1 px-4">
+                                                                <div (click)="clickCancelarButton(item)" class="h-8 w-full rounded-md bg-red-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                    <p>Cancelar</p>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    } 
                                                 </td>
                                             </tr>
                                         }
@@ -897,7 +919,7 @@
                                             </td>
                                         </tr>
                                     } @else {
-                                        @if (getNombreDelPaciente(item.dni).toLowerCase().includes(textoBuscado.toLowerCase())) {
+                                        @if (getNombreDelPaciente(item.dni).toLowerCase().includes(textoBuscado.toLowerCase())  || item.dia.toLowerCase().includes(textoBuscado.toLowerCase()) ||  item.estadoDelTurno.toLowerCase().includes(textoBuscado.toLowerCase())) {
                                             <tr class="w-full bg-slate-100 font-medium text-customDarkBlue min-h-11">
                                                 <td class="flex-1 border-r border-customDarkBlue text-center">{{item.dni}}</td>
                                                 <td class="flex-1 border-r border-customDarkBlue text-center">{{item.name}}</td>

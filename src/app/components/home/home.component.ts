@@ -561,6 +561,7 @@ getHorariosDisponibles(dia: Date): string[] {
             break;
           }
         }
+        
 
         this.storage.obtenerFotosDelUsuario(this.user.type, this.user.dni.toString()).then((data) => {
           this.user.foto1 = data[0].url;
