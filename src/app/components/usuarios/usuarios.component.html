@@ -7,6 +7,9 @@
         </div>
         <div class="h-full flex flex-1 items-center justify-end flex-row gap-4">
             @if (!agregandoUsuario) {
+                <button (click)="downloadUsersExcel()" class="h-8 w-40 rounded-full bg-slate-100 text-customBlue flex justify-center items-center shadow-2xl hover:bg-customBlue hover:text-slate-100 transition-colors">
+                    <p class="text-sm font-semibold">Descargar usuarios</p>
+                </button>
                 <button (click)="agregandoUsuario = true" class="h-8 w-36 rounded-full bg-slate-100 text-customBlue flex justify-center items-center shadow-2xl hover:bg-customBlue hover:text-slate-100 transition-colors">
                     <p class="text-sm font-semibold">Nuevo Usuario</p>
                 </button>
@@ -145,7 +148,7 @@
             </div>
         </div>
     }
-    <div class="h-full w-full flex flex-col bg-slate-200">
+    <div class="h-auto w-full flex flex-col bg-slate-200">
         <div class="h-12 min-h-12 w-full flex flex-row">
             @if (verUsuariosTipo === "paciente") {
                 <div class="h-full w-full flex flex-1 justify-center items-center">
@@ -163,91 +166,78 @@
                 </div>
             }
         </div>
-        <div class="h-full w-full flex justify-center items-center">
-            <div class="h-[90%] max-h-[90%] w-[95%] rounded-md border-2 border-customDarkBlue overflow-y-auto">
-                <table class="w-full h-full">
-                    <thead class="w-full">
-                        @if (verUsuariosTipo === "paciente") {
-                            <tr class="w-full h-8 bg-customDarkBlue text-slate-100">
-                                <th class="flex-1">DNI</th>
-                                <th class="flex-1">Nombre</th>
-                                <th class="flex-1">Apellido</th>
-                                <th class="flex-1">Edad</th>
-                                <th class="flex-1">Obra social</th>
-                                <th class="flex-1">Email</th>
-                                <th class="flex-1">Imagenes</th>
-                                <th class="flex-1">Historia Clinica</th>
-                            </tr>
-                        } @else {
-                            <tr class="w-full h-8 bg-customDarkBlue text-slate-100">
-                                <th class="flex-1">DNI</th>
-                                <th class="flex-1">Nombre</th>
-                                <th class="flex-1">Apellido</th>
-                                <th class="flex-1">Edad</th>
-                                <th class="flex-1">Especialidad</th>
-                                <th class="flex-1">Email</th>
-                                <th class="flex-1">Foto</th>
-                                <th class="flex-1">Habilitado</th> 
-                            </tr>
-                        }
-                    </thead>
-                    <tbody class="w-full">
-                        @if (verUsuariosTipo === "paciente") {
-                            @for (item of usuariosPaciente; track $index) {
-                                <tr class="w-full bg-slate-100 font-medium text-customDarkBlue min-h-11">
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.dni}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.name}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.lastname}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.edad}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.obrasocial}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.email}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">
-                                        <div class="flex flex-row justify-evenly">
-                                            <img src={{item.foto1}} alt="" class="h-10 w-10 rounded-lg">
-                                            <!-- <img src={{item.foto2}} alt="" class="h-10 w-10 rounded-lg"> -->
+        <div class="h-auto w-full flex justify-center items-center py-16">
+            <div class=" min-h-[90%] w-[95%] grid grid-cols-4 justify-center gap-5 items-center px-6 rounded-md">
+                @if (verUsuariosTipo == 'paciente') {
+                    @for (item of usuariosPaciente; track $index) {
+                        <div (click)="downloadUserPDF(item)" class="group w-[100%] h-64 flex justify-center items-center gap-2 px-4 py-4 flex-col bg-white shadow-2xl rounded-md cursor-pointer text-customDarkBlue hover:bg-customDarkBlue hover:text-white hover:h-72 hover:justify-center hover:scale-95 hover:shadow-sm transition-all duration-300">
+                            <div>
+                                <img src={{item.foto1}} alt="" class="h-20 w-20 group-hover:scale-105 transition-all duration-300 object-cover object-center rounded-full">
+                            </div>
+                            <div class="">
+                                <p class="text-base text-center font-bold">{{item.name + " " + item.lastname}}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-center font-medium">{{item.dni}}</p>
+                            </div>
+                            <div class="flex flex-row gap-2">
+                                <p class="text-sm text-center font-medium">Edad: {{item.edad}}</p>
+                                <p class="text-sm text-center font-medium">|</p>
+                                <p class="text-sm text-center font-medium">{{item.obrasocial}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-center">{{item.email}}</p>
+                            </div>
+                            <div class="group-hover:block hidden mt-4 transition-all duration-300">
+                                <p class="text-white font-bold text-sm text-center">Descargar turnos</p>
+                            </div>
+                        </div>
+                    }
+                } @else {
+                    @for (item of usuariosEspecialista; track $index) {
+                        <div class="group w-[100%] h-[290px] flex justify-center items-center gap-2 px-4 py-4 flex-col bg-white shadow-2xl rounded-md cursor-pointer text-customDarkBlue hover:bg-customDarkBlue hover:text-white hover:scale-95 hover:shadow-sm transition-all duration-300">
+                            <div>
+                                <img src={{item.foto1}} alt="" class="h-20 w-20 group-hover:scale-105 transition-all duration-300 object-cover object-center rounded-full">
+                            </div>
+                            <div class="">
+                                <p class="text-base text-center font-bold">{{item.name + " " + item.lastname}}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-center font-medium">{{item.dni}}</p>
+                            </div>
+                            <div class="flex flex-row gap-2">
+                                <p class="text-sm text-center font-medium">Edad: {{item.edad}}</p>
+                                <p class="text-sm text-center font-medium">|</p>
+                                <p class="text-sm text-center font-medium">{{item.especialidad}}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs text-center">{{item.email}}</p>
+                            </div>
+                            <div class="pt-3">
+                                <div class="flex justify-center">
+                                    <label class="switch">
+                                        <input (click)="manejarAccionesEspecialista(item)" [checked]="item.aceptadoPorAdmin" type="checkbox">
+                                        <div class="slider">
+                                            <div class="circle">
+                                                <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                                    <g>
+                                                        <path data-original="#000000" fill="currentColor" d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0"></path>
+                                                    </g>
+                                                </svg>
+                                                <svg class="checkmark" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 24 24" y="0" x="0" height="10" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                                                    <g>
+                                                        <path class="" data-original="#000000" fill="currentColor" d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"></path>
+                                                    </g>
+                                                </svg>
+                                            </div>
                                         </div>
-                                    </td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center p-2">
-                                        <button (click)="irAHistoriaClinico(item.dni)" class="w-full py-1 rounded-md bg-customDarkBlue text-white font-bold">Ver</button>
-                                    </td>
-                                </tr>
-                            }
-                        } @else {
-                            @for (item of usuariosEspecialista; track $index) {
-                                <tr class="w-full bg-slate-100 font-medium text-customDarkBlue min-h-12">
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.dni}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.name}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.lastname}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.edad}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center">{{item.especialidad}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center text-sm">{{item.email}}</td>
-                                    <td class="flex-1 border-r border-customDarkBlue text-center text-sm h-full flex justify-center items-center"><img src={{item.foto1}} alt="" class="h-10 w-10 rounded-lg"></td>
-                                    <td class="flex-1">
-                                        <div class="flex justify-center">
-                                            <label class="switch">
-                                                <input (click)="manejarAccionesEspecialista(item)" [checked]="item.aceptadoPorAdmin" type="checkbox">
-                                                <div class="slider">
-                                                    <div class="circle">
-                                                        <svg class="cross" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 365.696 365.696" y="0" x="0" height="6" width="6" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                                            <g>
-                                                                <path data-original="#000000" fill="currentColor" d="M243.188 182.86 356.32 69.726c12.5-12.5 12.5-32.766 0-45.247L341.238 9.398c-12.504-12.503-32.77-12.503-45.25 0L182.86 122.528 69.727 9.374c-12.5-12.5-32.766-12.5-45.247 0L9.375 24.457c-12.5 12.504-12.5 32.77 0 45.25l113.152 113.152L9.398 295.99c-12.503 12.503-12.503 32.769 0 45.25L24.48 356.32c12.5 12.5 32.766 12.5 45.247 0l113.132-113.132L295.99 356.32c12.503 12.5 32.769 12.5 45.25 0l15.081-15.082c12.5-12.504 12.5-32.77 0-45.25zm0 0"></path>
-                                                            </g>
-                                                        </svg>
-                                                        <svg class="checkmark" xml:space="preserve" style="enable-background:new 0 0 512 512" viewBox="0 0 24 24" y="0" x="0" height="10" width="10" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                                                            <g>
-                                                                <path class="" data-original="#000000" fill="currentColor" d="M9.707 19.121a.997.997 0 0 1-1.414 0l-5.646-5.647a1.5 1.5 0 0 1 0-2.121l.707-.707a1.5 1.5 0 0 1 2.121 0L9 14.171l9.525-9.525a1.5 1.5 0 0 1 2.121 0l.707.707a1.5 1.5 0 0 1 0 2.121z"></path>
-                                                            </g>
-                                                        </svg>
-                                                    </div>
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>    
-                </table>    
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
             </div>
         </div>
     </div>

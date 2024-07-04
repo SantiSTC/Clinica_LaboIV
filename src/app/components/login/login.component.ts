@@ -35,6 +35,9 @@ export class LoginComponent implements OnInit {
           if(data != "noVerificado") {
             if(this.comprobarEspecialistaAceptado(this.email)) {
               this.router.navigateByUrl('home');
+
+              this.guardarIngresoAlSistema();
+
               Swal.fire({
                 title: 'Bienvenido!',
                 icon: 'success',
@@ -121,6 +124,45 @@ export class LoginComponent implements OnInit {
     }
 
     return aceptado;
+  }
+
+  guardarIngresoAlSistema() {
+    let usuario: any;
+
+    for (let i = 0; i < this.usuarios.length; i++) {
+      if (this.usuarios[i].email === this.email) {
+        usuario = this.usuarios[i];
+        break;
+      }
+    }
+
+    const date = new Date();
+
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Enero es 0
+    const year = date.getFullYear();
+
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    const fechaFormateada = `${day}/${month}/${year}`;
+    const horaFormateada = `${hours}:${minutes}:${seconds}`;
+
+    let obj = {
+      nombre: usuario.name + " " + usuario.lastname,
+      dni: usuario.dni,
+      type: usuario.type,
+      mail: usuario.email,
+      fecha: fechaFormateada,
+      hora: horaFormateada,
+    }
+
+    this.firestore.guardar('ingresos', obj).then(() => {
+      console.log("Log de ingreso guardado correctamente.");
+    }).catch(() => {
+      console.log("ERROR guardando el log de ingreso.");
+    });
   }
 
   ngOnInit() {

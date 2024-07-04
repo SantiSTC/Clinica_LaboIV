@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "clinica": {
+    "clinica2": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/clinica",
+            "outputPath": "dist/clinica2",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -31,7 +31,6 @@
           },
           "configurations": {
             "production": {
-              "aot": true,
               "budgets": [
                 {
                   "type": "initial",
@@ -58,10 +57,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "clinica:build:production"
+              "buildTarget": "clinica2:build:production"
             },
             "development": {
-              "buildTarget": "clinica:build:development"
+              "buildTarget": "clinica2:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -69,7 +68,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "clinica:build"
+            "buildTarget": "clinica2:build"
           }
         },
         "test": {

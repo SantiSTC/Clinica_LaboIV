@@ -82,6 +82,7 @@
         <div class="h-96 w-96 flex flex-col justify-center items-center gap-5 bg-slate-100 rounded-md px-10 py-5">
             <p class="text-xl font-bold text-red-600 text-center">Reseña/Diagnostico de tu turno del dia {{turnoAVerResena.dia}} a las {{turnoAVerResena.hora}}</p>
             <p class="text-base text-customDarkBlue font-semibold">{{turnoAVerResena.resenaDelEspecialista}}</p>
+            <p appCopiarAlPortapapeles={{turnoAVerResena.resenaDelEspecialista}} class="text-zinc-700 text-xs font-light hover:font-medium hover:text-zinc-800 cursor-pointer">Copiar reseña al portapapeles</p>
             <button (click)="pacienteViendoResena = false" class="bg-green-600 p-3 text-white rounded-md font-semibold">Volver</button>
         </div>
     </div>
@@ -91,6 +92,7 @@
         <div class="h-96 w-96 flex flex-col justify-center items-center gap-5 bg-slate-100 rounded-md px-10 py-5">
             <p class="text-xl font-bold text-red-600 text-center">Reseña/Diagnostico del turno del dia {{turnoAVerResena.dia}} a las {{turnoAVerResena.hora}} con el paciente: {{getNombreDelPaciente(turnoAVerResena.paciente)}}</p>
             <p class="text-base text-customDarkBlue font-semibold">{{turnoAVerResena.resenaDelPaciente}}</p>
+            <p appCopiarAlPortapapeles={{turnoAVerResena.resenaDelPaciente}} class="text-zinc-700 text-xs font-light hover:font-medium hover:text-zinc-800 cursor-pointer">Copiar reseña al portapapeles</p>
             <button (click)="especialistaViendoResena = false" class="bg-green-600 p-3 text-white rounded-md font-semibold">Volver</button>
         </div>
     </div>
@@ -230,10 +232,10 @@
     </div>
     @if (cerrandoSesion) {
         <div class="w-full flex justify-end">
-            <div (click)="cerrarSesion()" class="w-32 h-10 rounded-md flex justify-center items-center flex-row gap-1.5 cursor-pointer mr-[2%] mt-1 bg-red-600 hover:bg-red-800 transition-all">
+            <button appConfirmLeave appToolTip="Saldrás de tu cuenta" (click)="cerrarSesion()" class="w-32 h-10 rounded-md flex justify-center items-center flex-row gap-1.5 cursor-pointer mr-[2%] mt-1 bg-red-600 hover:bg-red-800 transition-all">
                 <img src="/assets/volver.png" alt="" class="h-4 w-4 cursor-pointer">
                 <p class="text-sm font-medium text-white whitespace-nowrap">Cerrar Sesión</p>
-            </div>
+            </button>
         </div>
     }
     <div class="h-auto w-full flex flex-col justify-center items-center bg-slate-300">
@@ -520,23 +522,23 @@
                                                     @if (item.estadoDelTurno != 'cancelado' && item.estadoDelTurno != 'rechazado') {
                                                         @if (item.estadoDelTurno != 'realizado') {
                                                             <div class="w-full flex justify-center gap-2 p-2">
-                                                                <div (click)="clickCancelarButton(item)" class="h-8 w-full rounded-md bg-red-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                <div appToolTip="Cancelaras tu turno" (click)="clickCancelarButton(item)" class="h-8 w-full rounded-md bg-red-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                     <p>Cancelar</p>
                                                                 </div>
                                                             </div>
                                                         } @else {
                                                             <div class="w-full flex justify-center gap-2 p-2">
                                                                 @if(item.resenaDelEspecialista != '') {
-                                                                    <div (click)="pacienteVerResena(item)" class="h-8 w-full rounded-md bg-green-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                    <div appToolTip="Veras la reseña del medico" (click)="pacienteVerResena(item)" class="h-8 w-full rounded-md bg-green-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                         <p>Ver reseña</p>
                                                                     </div>
                                                                 }
                                                                 @if (item.calificacion == -1) {
-                                                                    <div (click)="clickCalificarButton(item)" class="h-8 w-full rounded-md bg-green-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                    <div appToolTip="Calificaras la atencion del medico" (click)="clickCalificarButton(item)" class="h-8 w-full rounded-md bg-green-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                         <p>Calificar</p>
                                                                     </div>
                                                                 }
-                                                                <div (click)="pacienteViendoEncuesta = true" class="h-8 w-full rounded-md bg-yellow-500 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                <div appToolTip="No disponible aún" (click)="pacienteViendoEncuesta = true" class="h-8 w-full rounded-md bg-yellow-500 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                     <p>Encuesta</p>
                                                                 </div>
                                                             </div>
@@ -545,14 +547,14 @@
                                                         <div class="w-full flex justify-center gap-2 p-2">
                                                             @if (item.estadoDelTurno == 'rechazado') {
                                                                 @if(item.razonRechazo != '') {
-                                                                    <div (click)="pacienteVerMotivoRechazo(item)" class="h-8 p-2 w-full rounded-md bg-yellow-500 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                    <div appToolTip="Ver motio de rechazo de turno" (click)="pacienteVerMotivoRechazo(item)" class="h-8 p-2 w-full rounded-md bg-yellow-500 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                         <p>Ver motivo</p>
                                                                     </div>
                                                                 }
                                                             } @else {
                                                                 @if (item.estadoDelTurno == 'cancelado') {
                                                                     @if (item.razonCancelacion != "" && item.estadoDelTurno != undefined) {
-                                                                        <div (click)="pacienteVerMotivoCancelacion(item)" class="h-8 w-full rounded-md bg-yellow-500 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                        <div appToolTip="Ver motivo de cancelacion de turno" (click)="pacienteVerMotivoCancelacion(item)" class="h-8 w-full rounded-md bg-yellow-500 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                             <p>Ver motivo</p>
                                                                         </div>
                                                                     }
@@ -721,17 +723,17 @@
                                                         @if (item.estadoDelTurno != 'rechazado') {
                                                             @if(item.estadoDelTurno != 'cancelado' && item.estadoDelTurno != 'aceptado') {
                                                                 <div class="w-full flex justify-center gap-2 p-2">
-                                                                    <div (click)="clickRechazarButton(item)" class="h-8 w-full rounded-md bg-red-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                    <div appToolTip="Rechazaras el turno del paciente" (click)="clickRechazarButton(item)" class="h-8 w-full rounded-md bg-red-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                         <p>Rechazar</p>
                                                                     </div>
                                                                 </div>
                                                                 <div class="w-full flex justify-center gap-2 p-2">
-                                                                    <div (click)="clickCancelarButton(item)" class="h-8 w-full rounded-md bg-red-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                    <div appToolTip="Cancelaras el turno del paciente" (click)="clickCancelarButton(item)" class="h-8 w-full rounded-md bg-red-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                         <p>Cancelar</p>
                                                                     </div>
                                                                 </div>
                                                                 <div class="w-full flex justify-center gap-2 p-2">
-                                                                    <div (click)="especialistaAceptaTurno(item)" class="h-8 w-full rounded-md bg-green-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                    <div appToolTip="Aceptaras el turno del paciente" (click)="especialistaAceptaTurno(item)" class="h-8 w-full rounded-md bg-green-600 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                         <p>Aceptar</p>
                                                                     </div>
                                                                 </div>
@@ -739,14 +741,14 @@
                                                         }
                                                         @if(item.estadoDelTurno == 'cancelado') {
                                                             <div class="w-full flex justify-center gap-2 p-2">
-                                                                <div (click)="especialistaVerMotivoCancelacion(item)" class="h-8 w-full rounded-md bg-yellow-500 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                <div appToolTip="Veras el motivo de cancelacion del paciente" (click)="especialistaVerMotivoCancelacion(item)" class="h-8 w-full rounded-md bg-yellow-500 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                     <p>Ver motivo</p>
                                                                 </div>
                                                             </div>
                                                         }
                                                         @if(item.estadoDelTurno == 'aceptado') {
                                                             <div class="w-full flex justify-center gap-2 p-2">
-                                                                <div (click)="clickRealizadoButton(item)" class="h-8 w-full rounded-md bg-sky-800 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                <div appToolTip="Marcaras el turno como FINALIZADO" (click)="clickRealizadoButton(item)" class="h-8 w-full rounded-md bg-sky-800 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                     <p>Realizado</p>
                                                                 </div>
                                                             </div>
@@ -754,7 +756,7 @@
                                                     } @else {
                                                         @if (item.resenaDelPaciente != '') {
                                                             <div class="w-full flex justify-center gap-2 p-2">
-                                                                <div (click)="especialistaVerResena(item)" class="h-8 w-full rounded-md bg-yellow-500 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
+                                                                <div appToolTip="Veras la reseña del paciente sobre tu atencion" (click)="especialistaVerResena(item)" class="h-8 w-full rounded-md bg-yellow-500 text-white text-sm font-semibold flex justify-center items-center hover:bg-customDarkBlue hover:text-white active:scale-95 transition-all shadow-lg cursor-pointer">
                                                                     <p>Ver reseña</p>
                                                                 </div>
                                                             </div>
@@ -875,7 +877,7 @@
                 </div>
             </div>    
         } @else if (pantalla == 'pacientes') {
-            <div class="h-[90%] w-[90%] bg-white m-10 flex flex-col items-center justify-center p-6 gap-6 shadow-lg">
+            <div class="h-[90%] w-[90%] bg-slate-100 m-10 flex flex-col items-center justify-center p-6 gap-6 shadow-lg">
                 <div class="h-16 w-full flex justify-center items-center pb-">
                     <p class="font-bold text-xl text-customDarkBlue drop-shadow-md text-center">Tus pacientes</p>
                 </div>
@@ -886,65 +888,91 @@
                     </div>
                 </div>
                 <div class="flex w-full h-full justify-center">
-                    <div class="h-[90%] max-h-[90%] w-[95%] rounded-md border-2 border-customDarkBlue overflow-y-auto">
-                        <table class="w-full h-full">
-                            <thead class="w-full bg-customDarkBlue text-white">
-                                <th class="flex-1">DNI</th>
-                                <th class="flex-1">Nombre</th>
-                                <th class="flex-1">Apellido</th>
-                                <th class="flex-1">Edad</th>
-                                <th class="flex-1">Obra social</th>
-                                <th class="flex-1">Email</th>
-                                <th class="flex-1">Imagenes</th>
-                                <th class="flex-1">Historia Clinica</th>
-                            </thead>
-                            <tbody class="w-full">
-                                @for (item of pacientesDelEspecialista; track $index) {
-                                    @if (textoBuscado == "") {
-                                        <tr class="w-full bg-slate-100 font-medium text-customDarkBlue min-h-11">
-                                            <td class="flex-1 border-r border-customDarkBlue text-center">{{item.dni}}</td>
-                                            <td class="flex-1 border-r border-customDarkBlue text-center">{{item.name}}</td>
-                                            <td class="flex-1 border-r border-customDarkBlue text-center">{{item.lastname}}</td>
-                                            <td class="flex-1 border-r border-customDarkBlue text-center">{{item.edad}}</td>
-                                            <td class="flex-1 border-r border-customDarkBlue text-center">{{item.obrasocial}}</td>
-                                            <td class="flex-1 border-r border-customDarkBlue text-center">{{item.email}}</td>
-                                            <td class="flex-1 border-r border-customDarkBlue text-center">
-                                                <div class="flex flex-row justify-evenly">
-                                                    <img src={{item.foto1}} alt="" class="h-10 w-10 rounded-lg">
-                                                    <!-- <img src={{item.foto2}} alt="" class="h-10 w-10 rounded-lg"> -->
-                                                </div>
-                                            </td>
-                                            <td class="flex-1 border-r border-customDarkBlue text-center p-2">
-                                                <button (click)="irAHistoriaClinico(item.dni)" class="w-full py-1 rounded-md bg-customDarkBlue text-white font-bold">Ver</button>
-                                            </td>
-                                        </tr>
-                                    } @else {
-                                        @if (getNombreDelPaciente(item.dni).toLowerCase().includes(textoBuscado.toLowerCase())  || item.dia.toLowerCase().includes(textoBuscado.toLowerCase()) ||  item.estadoDelTurno.toLowerCase().includes(textoBuscado.toLowerCase())) {
-                                            <tr class="w-full bg-slate-100 font-medium text-customDarkBlue min-h-11">
-                                                <td class="flex-1 border-r border-customDarkBlue text-center">{{item.dni}}</td>
-                                                <td class="flex-1 border-r border-customDarkBlue text-center">{{item.name}}</td>
-                                                <td class="flex-1 border-r border-customDarkBlue text-center">{{item.lastname}}</td>
-                                                <td class="flex-1 border-r border-customDarkBlue text-center">{{item.edad}}</td>
-                                                <td class="flex-1 border-r border-customDarkBlue text-center">{{item.obrasocial}}</td>
-                                                <td class="flex-1 border-r border-customDarkBlue text-center">{{item.email}}</td>
-                                                <td class="flex-1 border-r border-customDarkBlue text-center">
-                                                    <div class="flex flex-row justify-evenly">
-                                                        <img src={{item.foto1}} alt="" class="h-10 w-10 rounded-lg">
-                                                        <!-- <img src={{item.foto2}} alt="" class="h-10 w-10 rounded-lg"> -->
-                                                    </div>
-                                                </td>
-                                                <td class="flex-1 border-r border-customDarkBlue text-center p-2">
-                                                    <button (click)="irAHistoriaClinico(item.dni)" class="w-full py-1 rounded-md bg-customDarkBlue text-white font-bold">Ver</button>
-                                                </td>
-                                            </tr>
-                                        }
-                                    }
+                    <div class=" h-auto w-[95%] grid grid-cols-4 justify-center gap-5 items-center px-6 rounded-md overflow-y-auto">
+                        @if (textoBuscado != "") {
+                            @for (item of pacientesDelEspecialista; track $index) {
+                                @if (getNombreDelPaciente(item.dni).toLowerCase().includes(textoBuscado.toLowerCase())) {
+                                    <div (click)="irAHistoriaClinico(item.dni)" class="group w-[100%] h-80 flex justify-start items-center gap-2 px-4 py-4 flex-col bg-white shadow-2xl rounded-md cursor-pointer text-customDarkBlue hover:bg-customDarkBlue hover:text-white hover:h-96 hover:justify-center hover:scale-95 hover:shadow-sm transition-all duration-300">
+                                        <div>
+                                            <img src={{item.foto1}} alt="" class="h-20 w-20 group-hover:scale-105 transition-all duration-300 object-cover object-center rounded-full">
+                                        </div>
+                                        <div class="">
+                                            <p class="text-base text-center font-bold">{{item.name + " " + item.lastname}}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-center font-medium">{{item.dni}}</p>
+                                        </div>
+                                        <div class="flex flex-row gap-2">
+                                            <p class="text-sm text-center font-medium">Edad: {{item.edad}}</p>
+                                            <p class="text-sm text-center font-medium">|</p>
+                                            <p class="text-sm text-center font-medium">{{item.obrasocial}}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-center">{{item.email}}</p>
+                                        </div>
+                                        <div class="flex flex-col gap-1">
+                                            <p class="text-xs text-center font-semibold">Ultimos turnos</p>
+                                            <p class="text-xs text-center mt-1">{{turnosPorPaciente[item.dni][0].dia + "-" + turnosPorPaciente[item.dni][0].hora}}</p>
+                                            @if (turnosPorPaciente[item.dni][1]) {
+                                                <p class="text-xs text-center mt-1">{{turnosPorPaciente[item.dni][1].dia + "-" + turnosPorPaciente[item.dni][1].hora}}</p>
+        
+                                                @if (turnosPorPaciente[item.dni][2]) {
+                                                    <p class="text-xs text-center mt-1">{{turnosPorPaciente[item.dni][2].dia + "-" + turnosPorPaciente[item.dni][2].hora}}</p>
+                                                }
+                                            }
+                                        </div>
+                                        <div class="group-hover:block hidden mt-4 transition-all duration-300">
+                                            <p class="text-white font-bold text-sm text-center">Ver historia clinica</p>
+                                        </div>
+                                    </div>
                                 }
-                            </tbody>    
-                        </table> 
+                            }
+                        } @else {
+                            @for (item of pacientesDelEspecialista; track $index) {
+                                <div (click)="irAHistoriaClinico(item.dni)" class="group w-[100%] h-[340px] flex justify-start items-center gap-2 px-4 py-5 flex-col bg-white shadow-2xl rounded-md cursor-pointer text-customDarkBlue hover:bg-customDarkBlue hover:text-white hover:h-96 hover:justify-center hover:scale-95 hover:shadow-sm transition-all duration-300">
+                                    <div>
+                                        <img src={{item.foto1}} alt="" class="h-20 w-20 group-hover:scale-105 transition-all duration-300 object-cover object-center rounded-full">
+                                    </div>
+                                    <div class="">
+                                        <p class="text-base text-center font-bold">{{item.name + " " + item.lastname}}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-center font-medium">{{item.dni}}</p>
+                                    </div>
+                                    <div class="flex flex-row gap-2">
+                                        <p class="text-sm text-center font-medium">Edad: {{item.edad}}</p>
+                                        <p class="text-sm text-center font-medium">|</p>
+                                        <p class="text-sm text-center font-medium">{{item.obrasocial}}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-center">{{item.email}}</p>
+                                    </div>
+                                    <div class="flex flex-col gap-1">
+                                        <p class="text-xs text-center font-semibold">Ultimos turnos</p>
+                                        <p class="text-xs text-center mt-1">{{turnosPorPaciente[item.dni][0].dia + "-" + turnosPorPaciente[item.dni][0].hora}}</p>
+                                        @if (turnosPorPaciente[item.dni][1]) {
+                                            <p class="text-xs text-center mt-1">{{turnosPorPaciente[item.dni][1].dia + "-" + turnosPorPaciente[item.dni][1].hora}}</p>
+    
+                                            @if (turnosPorPaciente[item.dni][2]) {
+                                                <p class="text-xs text-center mt-1">{{turnosPorPaciente[item.dni][2].dia + "-" + turnosPorPaciente[item.dni][2].hora}}</p>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="group-hover:block hidden mt-4 transition-all duration-300">
+                                        <p class="text-white font-bold text-sm text-center">Ver historia clinica</p>
+                                    </div>
+                                </div>
+                            }
+                        }
                     </div>
                 </div>
             </div>   
         }
     </div>
 </div>
+@if (user.type == "admin") {
+    <div routerLink="/stats" class="absolute left-0 bottom-0 ml-8 mb-6 flex justify-center items-center bg-customDarkBlue text-white font-bold gap-2 px-4 py-2.5 flex-row rounded-lg cursor-pointer shadow-2xl hover:scale-95 hover:shadow-sm transition-all">
+        <p>Informes</p>
+        <img src="/assets/stats.png" alt="" class="h-4 w-4">
+    </div>
+}

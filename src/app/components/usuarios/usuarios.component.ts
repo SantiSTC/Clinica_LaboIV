@@ -2,10 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { FirestoreService } from '../../services/firestore.service';
-import { Subscription, elementAt } from 'rxjs';
+import { Subscription, elementAt, take } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { StorageService } from '../../services/storage.service';
+
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-usuarios',
@@ -195,6 +198,107 @@ export class UsuariosComponent implements OnInit {
     this.router.navigate(['ver_hc', dni]);
   }
 
+  downloadUsersExcel(): void {
+    // Crear una hoja de cálculo
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.usuarios.map(user => ({
+      Tipo: user.type,
+      Nombre: user.name,
+      Apellido: user.lastname,
+      Edad: user.edad,
+      DNI: user.dni,
+      Email: user.email,
+      'Obra Social': user.obrasocial || 'No aplica',
+      Especialidad: user.especialidad || 'No aplica',
+      'Aceptado por Admin': user.aceptadoPorAdmin !== undefined ? (user.aceptadoPorAdmin ? 'Sí' : 'No') : 'No aplica'
+    })));
+  
+    // Crear un libro de trabajo y añadir la hoja
+    const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Usuarios');
+  
+    // Generar el archivo Excel
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data: Blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    
+    // Descargar el archivo
+    const fileName: string = 'usuarios.xlsx';
+    const link: HTMLAnchorElement = document.createElement('a');
+    link.href = window.URL.createObjectURL(data);
+    link.download = fileName;
+    link.click();
+  }
+
+  downloadUserPDF(usuario: any) {
+    let turnosDelUsuario: any[] = [];
+
+    this.firestore.traer('turnos').pipe(take(1)).subscribe((data) => {
+      data.forEach(element => {
+        if(element.paciente == usuario.dni) {
+          turnosDelUsuario.push(element);
+        }
+      })
+
+      console.log("TURNOS DEL USUARIO: ", turnosDelUsuario);
+
+      // Crear un nuevo documento PDF
+      const doc = new jsPDF();
+    
+      // Configurar el estilo del texto
+      doc.setFontSize(16);
+      doc.text('Datos del Usuario', 20, 20);
+    
+      // Añadir los datos del usuario
+      doc.setFontSize(12);
+      let yPos = 40;
+      const lineHeight = 10;
+    
+      doc.text(`Nombre: ${usuario.name}`, 20, yPos);
+      yPos += lineHeight;
+      doc.text(`Apellido: ${usuario.lastname}`, 20, yPos);
+      yPos += lineHeight;
+      doc.text(`Edad: ${usuario.edad}`, 20, yPos);
+      yPos += lineHeight;
+      doc.text(`DNI: ${usuario.dni}`, 20, yPos);
+      yPos += lineHeight;
+      doc.text(`Email: ${usuario.email}`, 20, yPos);
+      yPos += lineHeight;
+      doc.text(`Obra Social: ${usuario.obrasocial || 'No especificada'}`, 20, yPos);
+      yPos += lineHeight * 2;
+
+      doc.setFontSize(14);
+      doc.text('Turnos del Usuario', 20, yPos);
+      yPos += lineHeight * 1.5;
+
+      if (turnosDelUsuario.length > 0) {
+        turnosDelUsuario.forEach((turno, index) => {
+          if(turno.estadoDelTurno == "realizado") {
+            doc.setFontSize(12);
+            doc.text(`Fecha: ${turno.dia}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Hora: ${turno.hora}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Especialista: ${this.getNombreDelEspecialista(turno.especialista)}`, 20, yPos);
+            yPos += lineHeight;
+  
+            doc.line(20, yPos, 190, yPos);
+
+            // Si estamos cerca del final de la página, empezar una nueva
+            if (yPos > 270) {
+              doc.addPage();
+              yPos = 20;
+            }
+          }
+        });
+      } else {
+        doc.setFontSize(12);
+        doc.text('No hay turnos registrados para este usuario.', 20, yPos);
+      }
+    
+      // Generar y descargar el PDF
+      doc.save(`usuario_${usuario.dni}.pdf`);
+    })
+  }
+
   ngOnInit() {
     // Traer info usuario actual
     this.userSubscription = this.auth.userActual$.subscribe(
@@ -247,5 +351,16 @@ export class UsuariosComponent implements OnInit {
   ngOnDestroy() {
     this.userSubscription.unsubscribe();
     this.observable.unsubscribe();
+  }
+
+  getNombreDelEspecialista(dni: string): string {
+    let nombre = '';
+    this.usuarios.forEach(element => {
+      if(element.type == 'especialista' && element.dni == dni) {
+        nombre = element.name + " " + element.lastname;
+      }
+    })
+
+    return nombre;
   }
 }

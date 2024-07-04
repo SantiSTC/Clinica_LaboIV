@@ -8,13 +8,16 @@ import { TurnosService } from '../../services/turnos.service';
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
+import { ConfirmLeaveDirective } from '../../directives/confirm-leave.directive';
+import { CopiarAlPortapapelesDirective } from '../../directives/copiar-al-portapapeles.directive';
+import { ToolTipDirective } from '../../directives/tool-tip.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  imports: [RouterLink, FormsModule]
+  imports: [RouterLink, FormsModule, ConfirmLeaveDirective, CopiarAlPortapapelesDirective, ToolTipDirective]
 })
 export class HomeComponent implements OnInit, OnDestroy {
   email: string = '';
@@ -90,6 +93,9 @@ export class HomeComponent implements OnInit, OnDestroy {
   spinner: boolean = false;
 
   pacientesDelEspecialista: any[] = [];
+
+  pacientes: any[] = [];
+  turnosPorPaciente: { [dni: string]: any[] } = {};
 
 
   constructor(private router: Router, private auth: AuthService, private firestore: FirestoreService, private storage: StorageService, private turnos: TurnosService) {}
@@ -515,6 +521,51 @@ getHorariosDisponibles(dia: Date): string[] {
     this.turnoAVerCancelacion = turno;
   }
 
+  cargarPacientes() {
+    this.pacientesDelEspecialista.forEach(paciente => {
+      this.cargarUltimosTurnos(paciente.dni);
+    });
+  }
+
+  cargarUltimosTurnos(dniPaciente: string) {
+    this.turnosPorPaciente[dniPaciente] = []; // Inicializar el array vacío
+  
+    this.getUltimos3Turnos(dniPaciente).then(turnos => {
+      this.turnosPorPaciente[dniPaciente] = turnos;
+    }).catch(error => {
+      console.error('Error al cargar los turnos:', error);
+      this.turnosPorPaciente[dniPaciente] = []; // En caso de error, asegúrate de que haya un array vacío
+    });
+  }
+
+  getUltimos3Turnos(dniPaciente: string): Promise<any[]> {
+    return firstValueFrom(this.firestore.traer(`turnos`)).then((data) => {
+      const turnosDelPaciente: any[] = [];
+
+      data.forEach(turno => {
+        if (turno.paciente === dniPaciente && turno.estadoDelTurno == "realizado") {
+          turnosDelPaciente.push(turno);
+        }
+      });
+
+      turnosDelPaciente.sort((a, b) => {
+        const [diaA, mesA, anioA] = a.dia.split('/');
+        const [horaA, minA] = a.hora.split(':');
+        const fechaHoraA = new Date(Number(anioA), Number(mesA) - 1, Number(diaA), Number(horaA), Number(minA));
+
+        const [diaB, mesB, anioB] = b.dia.split('/');
+        const [horaB, minB] = b.hora.split(':');
+        const fechaHoraB = new Date(Number(anioB), Number(mesB) - 1, Number(diaB), Number(horaB), Number(minB));
+
+        return fechaHoraB.getTime() - fechaHoraA.getTime();
+      });
+
+      console.log("AAAAAAAAAAAAAAAAAA: ", turnosDelPaciente)
+      return turnosDelPaciente.slice(0, 3);
+    });
+  }
+
+
   irAHistoriaClinico(dni: string) {
     this.router.navigate(['ver_hc', dni]);
   }
@@ -573,6 +624,12 @@ getHorariosDisponibles(dia: Date): string[] {
               this.especialidades.push(elemento.especialidad);
             }
           }
+
+          this.storage.obtenerFotosDelUsuario(elemento.type, elemento.dni.toString()).then((data) => {
+            elemento.foto1 = data[0].url;
+          })
+
+         
         });
       })
     );
@@ -601,6 +658,8 @@ getHorariosDisponibles(dia: Date): string[] {
           if(this.user.type == "especialista") {
             this.pacientesDelEspecialista = this.getPacientesDeUnEspecialista(this.user.dni);
           }
+
+          this.cargarPacientes()
       })
     )
 

@@ -6,55 +6,63 @@ export const routes: Routes = [
         loadComponent: () => import('./components/bienvenida/bienvenida.component').then(
             (m) => m.BienvenidaComponent,
         ),
+        data: { animation: 'fade' }
     },
     {
         path: "login",
         loadComponent: () => import('./components/login/login.component').then(
             (m) => m.LoginComponent,
         ),
-        data: { animation: 'isRight' }
+        data: { animation: 'slide' }
     },
     {
         path: "signup",
         loadComponent: () => import('./components/signup/signup.component').then(
             (m) => m.SignupComponent,
         ),
-        data: { animation: 'isLeft' }
+        data: { animation: 'slide' }
     },
     {
         path: "usuarios",
         loadComponent: () => import('./components/usuarios/usuarios.component').then(
             (m) => m.UsuariosComponent,
         ),
-        data: { animation: 'isRight' }
+         data: { animation: 'slideIn' }
     },
     {
         path: "home",
         loadComponent: () => import('./components/home/home.component').then(
             (m) => m.HomeComponent,
         ),
-        data: { animation: 'isRight' }
+         data: { animation: 'slideIn' }
     },
     {
         path: "perfil/:dni",
         loadComponent: () => import('./components/perfil/perfil.component').then(
             (m) => m.PerfilComponent,
         ),
-        data: { animation: 'isRight' }
+         data: { animation: 'fade' }
     },
     {
         path: "agregar_hc/:paciente/:especialista/:fecha",
         loadComponent: () => import('./components/agregar-historia-clinica/agregar-historia-clinica.component').then(
             (m) => m.AgregarHistoriaClinicaComponent,
         ),
-        data: { animation: 'isRight' }
+        data: { animation: 'slide' }
     },
     {
         path: "ver_hc/:paciente",
         loadComponent: () => import('./components/ver-historia-clinica/ver-historia-clinica.component').then(
             (m) => m.VerHistoriaClinicaComponent,
         ),
-        data: { animation: 'isRight' }
+        data: { animation: 'slide' }
+    },
+    {
+        path: "stats",
+        loadComponent: () => import('./components/stats/stats.component').then(
+            (m) => m.StatsComponent,
+        ),
+         data: { animation: 'slideIn' }
     },
     {
         path: "",

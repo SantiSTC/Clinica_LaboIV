@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { Subscription, take } from 'rxjs';
+import { Subscription, pipe, take } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { FirestoreService } from '../../services/firestore.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { jsPDF } from 'jspdf';
-import autoTable from 'jspdf-autotable';
 import { StorageService } from '../../services/storage.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, FormsModule],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css'
 })
@@ -29,6 +29,9 @@ export class PerfilComponent implements OnInit {
 
   usuarios: any[] = [];
   historiaClinica: any[] = [];
+
+  especialidades: string[] = [];
+  especialidadElegida: string = "";
 
   private clinicLogo = '/assets/clinica.png';
 
@@ -101,7 +104,81 @@ export class PerfilComponent implements OnInit {
     doc.save(nombreArchivo);
   }
 
+  downloadUserPDF(especialidad: string) {
+    let turnosDelUsuario: any[] = [];
+
+    this.firestore.traer('turnos').pipe(take(1)).subscribe((data) => {
+      data.forEach(element => {
+        if(element.paciente == this.user.dni) {
+          turnosDelUsuario.push(element);
+        }
+      })
+
+      // Crear un nuevo documento PDF
+      const doc = new jsPDF();
+    
+      // Configurar el estilo del texto
+      doc.setFontSize(16);
+      doc.text('Datos del Paciente', 20, 20);
+    
+      // Añadir los datos del usuario
+      doc.setFontSize(12);
+      let yPos = 40;
+      const lineHeight = 10;
+    
+      doc.text(`Nombre: ${this.user.name}`, 20, yPos);
+      yPos += lineHeight;
+      doc.text(`Apellido: ${this.user.lastname}`, 20, yPos);
+      yPos += lineHeight;
+      doc.text(`Edad: ${this.user.edad}`, 20, yPos);
+      yPos += lineHeight;
+      doc.text(`DNI: ${this.user.dni}`, 20, yPos);
+      yPos += lineHeight;
+      doc.text(`Email: ${this.user.email}`, 20, yPos);
+      yPos += lineHeight;
+      doc.text(`Obra Social: ${this.user.obrasocial || 'No especificada'}`, 20, yPos);
+      yPos += lineHeight * 2;
+
+      doc.setFontSize(14);
+      doc.text('Turnos del Paciente', 20, yPos);
+      yPos += lineHeight * 1.5;
+
+      if (turnosDelUsuario.length > 0) {
+        turnosDelUsuario.forEach((turno, index) => {
+          if(turno.estadoDelTurno == "realizado" && turno.especialidad.toLowerCase() == especialidad.toLowerCase()) {
+            doc.setFontSize(12);
+            doc.text(`Fecha: ${turno.dia}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Hora: ${turno.hora}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Especialidad: ${especialidad}`, 20, yPos);
+            yPos += lineHeight;
+            doc.text(`Especialista: ${this.getNombreDelEspecialista(turno.especialista)}`, 20, yPos);
+            yPos += lineHeight;
+
+            doc.line(20, yPos, 190, yPos);
+            yPos += lineHeight;
+
+            // Si estamos cerca del final de la página, empezar una nueva
+            if (yPos > 270) {
+              doc.addPage();
+              yPos = 20;
+            }
+          }
+        });
+      } else {
+        doc.setFontSize(12);
+        doc.text('No hay turnos registrados para este usuario en la especialidad elegida.', 20, yPos);
+      }
+    
+      // Generar y descargar el PDF
+      doc.save(`paciente_${this.user.dni}_turnos_${especialidad}.pdf`);
+    })
+  }
+
   ngOnInit() {
+    let todosLosTurnos: any;
+
     this.dni = this.activatedRoute.snapshot.paramMap.get('dni');
 
     this.userSubscription = this.auth.userActual$.subscribe(
@@ -110,6 +187,10 @@ export class PerfilComponent implements OnInit {
         this.email = user?.email || '';
       }
     );
+
+    this.firestore.traer('turnos').pipe(take(1)).subscribe((data) => {
+      todosLosTurnos = data;
+    })
 
     this.subscriptions.push(
       this.firestore.traer('usuarios').subscribe((data) => {
@@ -123,13 +204,23 @@ export class PerfilComponent implements OnInit {
           }
         }
 
+        if(this.user.dni != this.dni) {
+          this.router.navigate(['perfil', this.user.dni]);
+        }
+
         this.storage.obtenerFotosDelUsuario(this.user.type, this.user.dni.toString()).then((data) => {
           this.user.foto1 = data[0].url;
         });
 
-        if(this.user.dni != this.dni) {
-          this.router.navigate(['perfil', this.user.dni]);
-        }
+        todosLosTurnos.forEach((element: any) => {
+          if(element.paciente == this.user.dni && element.estadoDelTurno == 'realizado') {
+            if(!this.especialidades.includes(element.especialidad)) {
+              this.especialidades.push(element.especialidad);
+            }
+          }
+        })
+
+        console.log("ESPECIALIDABDABD", this.especialidades)
       })
     );
 
